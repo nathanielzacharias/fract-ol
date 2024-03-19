@@ -26,13 +26,24 @@
 int main (void)
 {
 
+	int endian_test;
+	int	local_endian;
 	void	*mlxptr;
+
+	endian_test = 0x11223344;
+  	if (((unsigned char *)&endian_test)[0] == 0x11)
+    	local_endian = 1;
+  	else
+    	local_endian = 0;
+
 
 	mlxptr = mlx_init();
 	if(!mlxptr)
 		return(1);
 
-	printf("mlxptr is: %p", mlxptr);
+	printf("mlxptr is: %p\n", mlxptr);
+	printf("local endian is: %d", local_endian);
+
 
 
 }
