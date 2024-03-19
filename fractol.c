@@ -36,14 +36,33 @@ int main (void)
   	else
     	local_endian = 0;
 
-
 	mlxptr = mlx_init();
 	if(!mlxptr)
 		return(1);
 
+	void	*win;
+	win = mlx_new_window(mlxptr, 500, 500, "Title1");
+	if(!win)
+		return(1);
+
+	void *img;
+	img = mlx_new_image(mlxptr, 500, 500);
+
+	char *imgdata;
+	int 	bpp;
+	int 	sl;
+	int 	endian;
+	imgdata = mlx_get_data_addr(img, &bpp, &sl, &endian);
+
+  	mlx_clear_window(mlxptr,win);
+
+
+	sleep(2);
+
 	printf("mlxptr is: %p\n", mlxptr);
-	printf("local endian is: %d", local_endian);
+	printf("local endian is: %d\n", local_endian);
+	printf("imgdata is: %p", imgdata);
 
-
-
+	mlx_destroy_window(mlxptr, win);
+	return (0);
 }
