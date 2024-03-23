@@ -17,6 +17,8 @@
 #include <stdlib.h>  // For malloc, free
 #include <stdio.h>   // For perror, strerror
 
+#include <math.h>
+
 #include "fractol.h"
 
 // void	*mlxptr;
@@ -76,6 +78,8 @@ int main (void)
 	z.im = 0;
 	c.re = 0.2;
 	c.im = 0.3;
+
+
 
 
 
