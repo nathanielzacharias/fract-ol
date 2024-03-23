@@ -18,6 +18,7 @@
 #include <stdio.h>   // For perror, strerror
 
 #include <math.h>
+#include <errno.h>
 
 #include "fractol.h"
 
@@ -27,9 +28,11 @@
 // if(!mlxptr)
 // 	return(1);
 
-int main (void)
+int main (int ac, char *av[])
 {
 
+	if(ac < 2 || ac > 4 || ac == 3)
+		return(errno = EINVAL, perror("Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num> "), 1);
 	// int endian_test;
 	// int	local_endian;
 	// void	*mlxptr;
@@ -71,29 +74,31 @@ int main (void)
 
 	// mlx_destroy_window(mlxptr, win);
 
-	t_complex	z;
-	t_complex	c;
-	ssize_t iter;
-	double temp_real;
+	// t_complex	z;
+	// t_complex	c;
+	// ssize_t iter;
+	// double temp_real;
 
-	z.re = 0;
-	z.im = 0;
-	c.re = 0.25;
-	c.im = 0.4;
+	// z.re = 0;
+	// z.im = 0;
+	// c.re = 0.25;
+	// c.im = 0.4;
 
-	iter = -1;
-	while (++iter < 30)
-	{
-		// z.re = pow(z.re, 2) - pow(z.im, 2);
-		// z.re = (z.re * z.re) - (z.im * z.im);
-		temp_real = pow(z.re, 2) - pow(z.im, 2);
-		z.im = 2 * z.re * z.im;
-		z.re = temp_rea0.2l;
-		z.re += c.re;
-		z.im += c.im;
-		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
-	}
+	// iter = -1;
+	// while (++iter < 30)
+	// {
+	// 	// z.re = pow(z.re, 2) - pow(z.im, 2);
+	// 	// z.re = (z.re * z.re) - (z.im * z.im);
+	// 	temp_real = pow(z.re, 2) - pow(z.im, 2);
+	// 	z.im = 2 * z.re * z.im;
+	// 	z.re = temp_rea0.2l;
+	// 	z.re += c.re;
+	// 	z.im += c.im;
+	// 	// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
+	// }
 
+	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) || (ac == 4 && !ft_strncmp(av[1], "julia", 5)))
+		printf("to be continued \n");
 
 
 
