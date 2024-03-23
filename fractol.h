@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 
-typedef struct s_znum
+typedef struct s_complex
 {
-	int	x;
-	int	y;
-} t_znum
+	double	re;
+	double	im;
+} t_complex;
