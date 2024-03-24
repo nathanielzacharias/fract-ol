@@ -43,20 +43,33 @@
 // 		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
 // 	}
 // }
+void destroy_free_close(t_fractal *fractal)
+{
+	mlx_destroy_display(fractal->mlxptr);
+	free(fractal->mlxptr);
+	errno = ENOMEM;
+	perror(F_ERRMALLOC);
+}
 
-void run_initializers(t_fractal *fractal)
+
+int run_initializers(t_fractal *fractal)
 {
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
-		return(errno = ENOMEM, perror(F_ERRMALLOC));
+		return(errno = ENOMEM, perror(F_ERRMALLOC), -1);
+
+	fractal->mlxwin = mlx_new_window(fractal-mlxptr, WIDTH, HEIGHT, fractal->name);
+	if(!(fractal->mlxwin))
+		return (destroy_free_close(fractal), -1);
 }
 
 
 int main (int ac, char *av[])
 {
+	t_fractal fractal;
 
 	if(ac < 2 || ac > 4 || ac == 3)
-		return(errno = EINVAL, perror(F_ERRARGS), 1);
+		return(errno = EINVAL, perror(F_ERRARGS), -1);
 	
 	// int endian_test;
 	// int	local_endian;
@@ -102,8 +115,9 @@ int main (int ac, char *av[])
 
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) || (ac == 4 && !ft_strncmp(av[1], "julia", 5)))
 	{
-		printf("to be continued \n");
-		// run_initializers();
+		// printf("to be continued \n");
+		if (run_initializers(&fractal) == -1)
+			return(-1);
 	}	
 	return (0);
 }

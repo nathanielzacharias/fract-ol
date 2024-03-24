@@ -27,6 +27,9 @@
 
 #include "../libft/libft.h"
 
+#define WIDTH 1600
+#define HEIGHT 1600
+
 /*Custom ERR messages to pass to perror()*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
@@ -42,6 +45,7 @@ typedef struct s_img
 
 typedef struct s_fractal
 {
+	char	*name;
 	void	*mlxptr;
 	void	*mlxwin;
 	t_img	img;
