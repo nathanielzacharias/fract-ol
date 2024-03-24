@@ -27,8 +27,25 @@
 
 #include "../libft/libft.h"
 
+/*Custom ERR messages to pass to perror()*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
 
+typedef struct s_fractal
+{
+	void	*mlx_p;
+	void	*mlx_win;
+	t_img	img;
+
+} t_fractal;
+
+typedef struct s_img
+{
+	void	*img_p;
+	char	*pix_p;
+	int		bpp;
+	int		endian;
+	int		line_l;
+} t_img;
 
 typedef struct s_complex
 {
