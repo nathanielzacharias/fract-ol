@@ -10,16 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minilibx-linux/mlx.h"
-
-#include <fcntl.h>   // For open, close
-#include <unistd.h>  // For read, write, close, perror, strerror, exit
-#include <stdlib.h>  // For malloc, free
-#include <stdio.h>   // For perror, strerror
-
-#include <math.h>
-#include <errno.h>
-
 #include "../includes/fractol.h"
 
 // void	*mlxptr;
@@ -59,6 +49,7 @@ int main (int ac, char *av[])
 
 	if(ac < 2 || ac > 4 || ac == 3)
 		return(errno = EINVAL, perror("Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num> "), 1);
+	
 	// int endian_test;
 	// int	local_endian;
 	// void	*mlxptr;
@@ -101,9 +92,10 @@ int main (int ac, char *av[])
 	// mlx_destroy_window(mlxptr, win);
 
 
-
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) || (ac == 4 && !ft_strncmp(av[1], "julia", 5)))
+	{
 		printf("to be continued \n");
-
+		// run_initializers();
+	}	
 	return (0);
 }

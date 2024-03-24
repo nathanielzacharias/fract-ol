@@ -10,6 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef FRACTOL_H
+# define FRACTOL_H
+
+
+#include "../minilibx-linux/mlx.h"
+
+#include <fcntl.h>   // For open, close
+#include <unistd.h>  // For read, write, close, perror, strerror, exit
+#include <stdlib.h>  // For malloc, free
+#include <stdio.h>   // For perror, strerror
+
+#include <math.h>
+#include <errno.h>
+
+
 #include "../libft/libft.h"
 
 typedef struct s_complex
@@ -17,3 +32,5 @@ typedef struct s_complex
 	double	re;
 	double	im;
 } t_complex;
+
+#endif
