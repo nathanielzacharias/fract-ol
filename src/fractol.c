@@ -44,6 +44,14 @@
 // 	}
 // }
 
+void run_initializers(t_fractal *fractal)
+{
+	fractal->mlxptr = mlx_init();
+	if(!(fractal->mlxptr))
+		return(errno = ENOMEM, perror(F_ERRMALLOC));
+}
+
+
 int main (int ac, char *av[])
 {
 

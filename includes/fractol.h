@@ -29,14 +29,7 @@
 
 /*Custom ERR messages to pass to perror()*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
-
-typedef struct s_fractal
-{
-	void	*mlx_p;
-	void	*mlx_win;
-	t_img	img;
-
-} t_fractal;
+#define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
 
 typedef struct s_img
 {
@@ -46,6 +39,15 @@ typedef struct s_img
 	int		endian;
 	int		line_l;
 } t_img;
+
+typedef struct s_fractal
+{
+	void	*mlxptr;
+	void	*mlxwin;
+	t_img	img;
+
+} t_fractal;
+
 
 typedef struct s_complex
 {
