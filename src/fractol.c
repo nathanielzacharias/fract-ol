@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minilibx/mlx.h"
+#include "../minilibx-linux/mlx.h"
 
 #include <fcntl.h>   // For open, close
 #include <unistd.h>  // For read, write, close, perror, strerror, exit
@@ -20,7 +20,7 @@
 #include <math.h>
 #include <errno.h>
 
-#include "fractol.h"
+#include "../includes/fractol.h"
 
 // void	*mlxptr;
 
