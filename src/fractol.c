@@ -18,37 +18,37 @@
 // if(!mlxptr)
 // 	return(1);
 
-void	compute_fractal()
-{
-	t_complex	z;
-	t_complex	c;
-	ssize_t iter;
-	double temp_real;
+// void	compute_fractal()
+// {
+// 	t_complex	z;
+// 	t_complex	c;
+// 	ssize_t iter;
+// 	double temp_real;
 
-	z.re = 0;
-	z.im = 0;
-	c.re = 0.25;
-	c.im = 0.4;
+// 	z.re = 0;
+// 	z.im = 0;
+// 	c.re = 0.25;
+// 	c.im = 0.4;
 
-	iter = -1;
-	while (++iter < 30)
-	{
-		// z.re = pow(z.re, 2) - pow(z.im, 2);
-		// z.re = (z.re * z.re) - (z.im * z.im);
-		temp_real = pow(z.re, 2) - pow(z.im, 2);
-		z.im = 2 * z.re * z.im;
-		z.re = temp_rea0.2l;
-		z.re += c.re;
-		z.im += c.im;
-		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
-	}
-}
+// 	iter = -1;
+// 	while (++iter < 30)
+// 	{
+// 		// z.re = pow(z.re, 2) - pow(z.im, 2);
+// 		// z.re = (z.re * z.re) - (z.im * z.im);
+// 		temp_real = pow(z.re, 2) - pow(z.im, 2);
+// 		z.im = 2 * z.re * z.im;
+// 		z.re = temp_rea0.2l;
+// 		z.re += c.re;
+// 		z.im += c.im;
+// 		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
+// 	}
+// }
 
 int main (int ac, char *av[])
 {
 
 	if(ac < 2 || ac > 4 || ac == 3)
-		return(errno = EINVAL, perror("Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num> "), 1);
+		return(errno = EINVAL, perror(F_ERRARGS), 1);
 	
 	// int endian_test;
 	// int	local_endian;

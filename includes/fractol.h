@@ -27,6 +27,9 @@
 
 #include "../libft/libft.h"
 
+#define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
+
+
 typedef struct s_complex
 {
 	double	re;
