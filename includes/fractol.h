@@ -27,8 +27,8 @@
 
 #include "../libft/libft.h"
 
-#define WIDTH 1600
-#define HEIGHT 1600
+#define WIDTH 800
+#define HEIGHT 800
 
 #define BLACK 0x0
 #define WHITE 0xffffff

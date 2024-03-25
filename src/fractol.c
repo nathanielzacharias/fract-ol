@@ -12,41 +12,36 @@
 
 #include "../includes/fractol.h"
 
-// void	*mlxptr;
+// void	compute_fractal()
+// {
+// 	t_complex	z;
+// 	t_complex	c;
+// 	ssize_t iter;
+// 	double temp_real;
 
-// mlxptr = mlx_init();
-// if(!mlxptr)
-// 	return(1);
+// 	z.re = 0;
+// 	z.im = 0;
+// 	c.re = 0.25;
+// 	c.im = 0.4;
 
-void	compute_fractal()
-{
-	t_complex	z;
-	t_complex	c;
-	ssize_t iter;
-	double temp_real;
-
-	z.re = 0;
-	z.im = 0;
-	c.re = 0.25;
-	c.im = 0.4;
-
-	iter = -1;
-	while (++iter < 30)
-	{
-		// z.re = pow(z.re, 2) - pow(z.im, 2);
-		// z.re = (z.re * z.re) - (z.im * z.im);
-		temp_real = pow(z.re, 2) - pow(z.im, 2);
-		z.im = 2 * z.re * z.im;
-		z.re = temp_rea0.2l;
-		z.re += c.re;
-		z.im += c.im;
-		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
-	}
-}
+// 	iter = -1;
+// 	while (++iter < 30)
+// 	{
+// 		// z.re = pow(z.re, 2) - pow(z.im, 2);
+// 		// z.re = (z.re * z.re) - (z.im * z.im);
+// 		temp_real = pow(z.re, 2) - pow(z.im, 2);
+// 		z.im = 2 * z.re * z.im;
+// 		z.re = temp_rea0.2l;
+// 		z.re += c.re;
+// 		z.im += c.im;
+// 		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
+// 	}
+// }
 
 /*exit gracefully*/
 static void destroy_free_close(t_fractal *fractal)
 {
+	printf("in destroy free close \n");
 	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
 	mlx_destroy_display(fractal->mlxptr);
 	free(fractal->mlxptr);
@@ -54,13 +49,12 @@ static void destroy_free_close(t_fractal *fractal)
 	perror(F_ERRMLXPTR);
 }
 
-
-
 /*init the values in struct with error handling*/
-int run_initializers(t_fractal *fractal)
+int run_initializers(t_fractal *fractal, char *name)
 {
 	fractal->divergence_threshold = 4;
 	fractal->iter = 30;
+	fractal->name = name;
 
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
@@ -75,6 +69,7 @@ int run_initializers(t_fractal *fractal)
 		return (destroy_free_close(fractal), -1);
 
 	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, &fractal->img.line_l, &fractal->img.endian);
+
 
 	return(0);
 	//events_init(fractal);
@@ -113,33 +108,45 @@ t_complex sq_complex(t_complex *z)
 	return (result);
 }
 
+void putpixel(int x, int y, t_img *img, int color)
+{
+	int offset;
+
+	offset = (y * img->line_l) + (x * (img->bpp / 8));
+	*(unsigned int *)(img->pix_p + offset) = color;
+}
+
+
 void	handle_pixel(int x, int y, t_fractal *fractal)
 {
 	t_complex	z;
 	t_complex	c;
+	t_complex	tmp;
 	ssize_t i;
-	double temp_real;
+	int color;
 
 	z.re = 0;
 	z.im = 0;
 	// c.re = 0.25;
 	// c.im = 0.4;
 
+	// check if point diverges
 	i = -1;
 	while (++i < fractal->iter)
 	{
-		z = sum_complex(sq_complex(z), c);
+		tmp = sq_complex(&z);
+		z = sum_complex(&tmp, &c);
 
 		//if hypotenuse > 2, diverges
 		if ((pow(z.re, 2) + pow(z.im, 2)) > fractal->divergence_threshold)
 		{
-			color = map(i, BLACK, WHITE, fractal->iter)
-			//putpixel()
+			color = map(i, BLACK, WHITE, fractal->iter);
+			putpixel(x, y, &fractal->img, color); 
 		}
 	}
-
+	//else converges
+	putpixel(x, y, &fractal->img, JAZZ_TURQUOISE);
 }
-
 
 /*threshold is -2 to +2, radius of 2*/
 void	render(t_fractal *fractal)
@@ -154,13 +161,10 @@ void	render(t_fractal *fractal)
 		while (++x < WIDTH)
 		{
 			handle_pixel(x, y, fractal);
-
-
 		}
 	}
+	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
-
-
 
 int main (int ac, char *av[])
 {
@@ -179,45 +183,19 @@ int main (int ac, char *av[])
  //  	else
  //    	local_endian = 0;
 
-	// mlxptr = mlx_init();
-	// if(!mlxptr)
-	// 	return(1);
+// || (ac == 4 && !ft_strncmp(av[1], "julia", 5))
 
-	// void	*win;
-	// win = mlx_new_window(mlxptr, 500, 500, "Title1");
-	// if(!win)
-	// 	return(1);
-
-	// void *img;
-	// img = mlx_new_image(mlxptr, 500, 500);
-
-	// char *imgdata;
-	// int 	bpp;
-	// int 	sl;
-	// int 	endian;
-	// imgdata = mlx_get_data_addr(img, &bpp, &sl, &endian);
-
- //  	// mlx_clear_window(mlxptr,win);
-
-
-	// // sleep(2);
-
-	// printf("mlxptr is: %p\n", mlxptr);
-	// printf("local endian is: %d\n", local_endian);
-	// printf("imgdata is: %p", imgdata);
-
-	// mlx_loop(mlxptr);
-
-	// mlx_destroy_window(mlxptr, win);
-
-
-	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) || (ac == 4 && !ft_strncmp(av[1], "julia", 5)))
+	else if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) )
 	{
-		// printf("to be continued \n");
-		if (run_initializers(&fractal) == -1)
+		int check;		
+		check = run_initializers(&fractal, av[1]);
+		if (check == -1)
 			return(-1);
+		printf("run_init returns: %d\n", check);
 
-		//render()
+		render(&fractal);
+
+		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);
 }
