@@ -54,9 +54,14 @@ static void destroy_free_close(t_fractal *fractal)
 	perror(F_ERRMLXPTR);
 }
 
+
+
 /*init the values in struct with error handling*/
 int run_initializers(t_fractal *fractal)
 {
+	fractal->divergence_threshold = 4;
+	fractal->iter = 30;
+
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
 		return(destroy_free_close(fractal), -1);
@@ -75,6 +80,8 @@ int run_initializers(t_fractal *fractal)
 	//events_init(fractal);
 	//data_init(fractal);
 }
+
+
 
 double map(double ori_num, double min2, double max2, double max1)
 {
@@ -121,14 +128,10 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 	iter = -1;
 	while (++iter < 30)
 	{
-		// z.re = pow(z.re, 2) - pow(z.im, 2);
-		// z.re = (z.re * z.re) - (z.im * z.im);
-		temp_real = pow(z.re, 2) - pow(z.im, 2);
-		z.im = 2 * z.re * z.im;
-		z.re = temp_rea0.2l;
-		z.re += c.re;
-		z.im += c.im;
-		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
+		z = sum_complex(sq_complex(z), c);
+
+		//if hypotenuse > 2, diverges
+		//putpixel()
 	}
 
 }

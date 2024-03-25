@@ -50,6 +50,8 @@ typedef struct s_fractal
 	void	*mlxptr;
 	void	*mlxwin;
 	t_img	img;
+	double	divergence_threshold;
+	int		iter;
 
 } t_fractal;
 
