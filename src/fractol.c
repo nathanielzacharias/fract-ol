@@ -117,7 +117,7 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 {
 	t_complex	z;
 	t_complex	c;
-	ssize_t iter;
+	ssize_t i;
 	double temp_real;
 
 	z.re = 0;
@@ -125,13 +125,17 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 	// c.re = 0.25;
 	// c.im = 0.4;
 
-	iter = -1;
-	while (++iter < 30)
+	i = -1;
+	while (++i < fractal->iter)
 	{
 		z = sum_complex(sq_complex(z), c);
 
 		//if hypotenuse > 2, diverges
-		//putpixel()
+		if ((pow(z.re, 2) + pow(z.im, 2)) > fractal->divergence_threshold)
+		{
+			color = map(i, BLACK, WHITE, fractal->iter)
+			//putpixel()
+		}
 	}
 
 }

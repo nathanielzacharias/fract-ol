@@ -30,6 +30,41 @@
 #define WIDTH 1600
 #define HEIGHT 1600
 
+#define BLACK 0x0
+#define WHITE 0xffffff
+#define RED 0xff0000
+#define GREEN 0x00ff00
+#define BLUE 0x0000ff
+#define YELLOW 0xffff00
+#define CYAN 0x00ffff
+#define MAGENTA 0xff00ff
+#define GRAY 0x808080
+#define LIGHT_GRAY 0xc0c0c0
+#define DARK_GRAY 0x404040
+#define ORANGE 0xffa500
+#define PURPLE 0x800080
+#define PINK 0xffc0cb
+#define BROWN 0xa52a2a
+#define GOLD 0xffd700
+#define SILVER 0xc0c0c0
+#define JAZZ_BLUE 0x0073e6
+#define JAZZ_GREEN 0x00cc66
+#define JAZZ_PURPLE 0x9933ff
+#define JAZZ_YELLOW 0xffd700
+#define JAZZ_ORANGE 0xffa500
+#define JAZZ_RED 0xcc3333
+#define JAZZ_PINK 0xff66cc
+#define JAZZ_CYAN 0x00ffff
+#define JAZZ_TURQUOISE 0x40e0d0
+#define JAZZ_MAGENTA 0xff00ff
+#define JAZZ_LIME 0xbfff00
+#define JAZZ_GOLD 0xffcc00
+#define JAZZ_SILVER 0xc0c0c0
+#define JAZZ_BRONZE 0xcd7f32
+#define JAZZ_COPPER 0xb87333
+
+
+
 /*Custom ERR messages to pass to perror()*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
@@ -51,7 +86,7 @@ typedef struct s_fractal
 	void	*mlxwin;
 	t_img	img;
 	double	divergence_threshold;
-	int		iter;
+	ssize_t	iter;
 
 } t_fractal;
 
