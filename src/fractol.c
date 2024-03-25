@@ -88,6 +88,23 @@ double map(double ori_num, double min2, double max2, double max1)
 	return	(result); 
 }
 
+t_complex	sum_complex(t_complex *a, t_complex *b)
+{
+	t_complex result;
+
+	result.re = a->re + b->re;
+	result.im = a->im + b->im;
+	return (result);
+}
+
+t_complex sq_complex(t_complex *z)
+{
+	t_complex result;
+
+	result.re = pow(z->re, 2) - pow(z->im, 2);
+	result.im = 2*(z->re)*(z->im);
+	return (result);
+}
 
 void	handle_pixel(int x, int y, t_fractal *fractal)
 {
