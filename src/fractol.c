@@ -18,50 +18,124 @@
 // if(!mlxptr)
 // 	return(1);
 
-// void	compute_fractal()
-// {
-// 	t_complex	z;
-// 	t_complex	c;
-// 	ssize_t iter;
-// 	double temp_real;
-
-// 	z.re = 0;
-// 	z.im = 0;
-// 	c.re = 0.25;
-// 	c.im = 0.4;
-
-// 	iter = -1;
-// 	while (++iter < 30)
-// 	{
-// 		// z.re = pow(z.re, 2) - pow(z.im, 2);
-// 		// z.re = (z.re * z.re) - (z.im * z.im);
-// 		temp_real = pow(z.re, 2) - pow(z.im, 2);
-// 		z.im = 2 * z.re * z.im;
-// 		z.re = temp_rea0.2l;
-// 		z.re += c.re;
-// 		z.im += c.im;
-// 		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
-// 	}
-// }
-void destroy_free_close(t_fractal *fractal)
+void	compute_fractal()
 {
+	t_complex	z;
+	t_complex	c;
+	ssize_t iter;
+	double temp_real;
+
+	z.re = 0;
+	z.im = 0;
+	c.re = 0.25;
+	c.im = 0.4;
+
+	iter = -1;
+	while (++iter < 30)
+	{
+		// z.re = pow(z.re, 2) - pow(z.im, 2);
+		// z.re = (z.re * z.re) - (z.im * z.im);
+		temp_real = pow(z.re, 2) - pow(z.im, 2);
+		z.im = 2 * z.re * z.im;
+		z.re = temp_rea0.2l;
+		z.re += c.re;
+		z.im += c.im;
+		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
+	}
+}
+
+/*exit gracefully*/
+static void destroy_free_close(t_fractal *fractal)
+{
+	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
 	mlx_destroy_display(fractal->mlxptr);
 	free(fractal->mlxptr);
 	errno = ENOMEM;
-	perror(F_ERRMALLOC);
+	perror(F_ERRMLXPTR);
 }
 
-
+/*init the values in struct with error handling*/
 int run_initializers(t_fractal *fractal)
 {
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
-		return(errno = ENOMEM, perror(F_ERRMALLOC), -1);
+		return(destroy_free_close(fractal), -1);
 
-	fractal->mlxwin = mlx_new_window(fractal-mlxptr, WIDTH, HEIGHT, fractal->name);
+	fractal->mlxwin = mlx_new_window(fractal->mlxptr, WIDTH, HEIGHT, fractal->name);
 	if(!(fractal->mlxwin))
 		return (destroy_free_close(fractal), -1);
+
+	fractal->img.ptr = mlx_new_image(fractal->mlxptr, WIDTH, HEIGHT);
+	if(!(fractal->img.ptr))
+		return (destroy_free_close(fractal), -1);
+
+	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, &fractal->img.line_l, &fractal->img.endian);
+
+	return(0);
+	//events_init(fractal);
+	//data_init(fractal);
 }
+
+double map(double ori_num, double min2, double max2, double max1)
+{
+	double new_dist;
+	double ori_dist;
+	double result;
+
+	new_dist = max2 - min2;
+	ori_dist = max1;
+	result = ((ori_num) / ori_dist) * new_dist + min2;
+	return	(result); 
+}
+
+
+void	handle_pixel(int x, int y, t_fractal *fractal)
+{
+	t_complex	z;
+	t_complex	c;
+	ssize_t iter;
+	double temp_real;
+
+	z.re = 0;
+	z.im = 0;
+	// c.re = 0.25;
+	// c.im = 0.4;
+
+	iter = -1;
+	while (++iter < 30)
+	{
+		// z.re = pow(z.re, 2) - pow(z.im, 2);
+		// z.re = (z.re * z.re) - (z.im * z.im);
+		temp_real = pow(z.re, 2) - pow(z.im, 2);
+		z.im = 2 * z.re * z.im;
+		z.re = temp_rea0.2l;
+		z.re += c.re;
+		z.im += c.im;
+		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
+	}
+
+}
+
+
+/*threshold is -2 to +2, radius of 2*/
+void	render(t_fractal *fractal)
+{
+	int x;
+	int y;
+
+	y = -1;
+	while (++y < HEIGHT)
+	{
+		x = -1;
+		while (++x < WIDTH)
+		{
+			handle_pixel(x, y, fractal);
+
+
+		}
+	}
+}
+
 
 
 int main (int ac, char *av[])
@@ -118,6 +192,8 @@ int main (int ac, char *av[])
 		// printf("to be continued \n");
 		if (run_initializers(&fractal) == -1)
 			return(-1);
+
+		//render()
 	}	
 	return (0);
 }

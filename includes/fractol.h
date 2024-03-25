@@ -33,10 +33,11 @@
 /*Custom ERR messages to pass to perror()*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
+#define F_ERRMLXPTR "creating ptr for MLX ptr/display/window/img returned null"
 
 typedef struct s_img
 {
-	void	*img_p;
+	void	*ptr;
 	char	*pix_p;
 	int		bpp;
 	int		endian;
