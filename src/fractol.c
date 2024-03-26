@@ -53,7 +53,7 @@ static void destroy_free_close(t_fractal *fractal)
 int run_initializers(t_fractal *fractal, char *name)
 {
 	fractal->divergence_threshold = 4;
-	fractal->iter = 30;
+	fractal->iter = 300;
 	fractal->name = name;
 
 	fractal->mlxptr = mlx_init();
@@ -75,8 +75,6 @@ int run_initializers(t_fractal *fractal, char *name)
 	//events_init(fractal);
 	//data_init(fractal);
 }
-
-
 
 double map(double ori_num, double min2, double max2, double max1)
 {
@@ -116,7 +114,6 @@ void putpixel(int x, int y, t_img *img, int color)
 	*(unsigned int *)(img->pix_p + offset) = color;
 }
 
-
 void	handle_pixel(int x, int y, t_fractal *fractal)
 {
 	t_complex	z;
@@ -125,10 +122,14 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 	ssize_t i;
 	int color;
 
-	z.re = 0;
-	z.im = 0;
-	// c.re = 0.25;
-	// c.im = 0.4;
+	z.re = map(x, -2, 2, WIDTH);
+	z.im = map(y, 2, -2, HEIGHT);
+
+	// c.re = z.re;
+	// c.im = z.im;
+	c.re = 0.25;
+	c.im = 0.47;
+
 
 	// check if point diverges
 	i = -1;
@@ -136,12 +137,14 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 	{
 		tmp = sq_complex(&z);
 		z = sum_complex(&tmp, &c);
+		// printf("z.re is: %f\n", z.re );
 
 		//if hypotenuse > 2, diverges
 		if ((pow(z.re, 2) + pow(z.im, 2)) > fractal->divergence_threshold)
 		{
-			color = map(i, BLACK, WHITE, fractal->iter);
-			putpixel(x, y, &fractal->img, color); 
+			color = map(i, JAZZ_BRONZE, JAZZ_COPPER, fractal->iter);
+			putpixel(x, y, &fractal->img, color);
+			return ; 
 		}
 	}
 	//else converges
@@ -172,18 +175,7 @@ int main (int ac, char *av[])
 
 	if(ac < 2 || ac > 4 || ac == 3)
 		return(errno = EINVAL, perror(F_ERRARGS), -1);
-	
-	// int endian_test;
-	// int	local_endian;
-	// void	*mlxptr;
 
-	// endian_test = 0x11223344;
- //  	if (((unsigned char *)&endian_test)[0] == 0x11)
- //    	local_endian = 1;
- //  	else
- //    	local_endian = 0;
-
-// || (ac == 4 && !ft_strncmp(av[1], "julia", 5))
 
 	else if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) )
 	{
@@ -199,3 +191,17 @@ int main (int ac, char *av[])
 	}	
 	return (0);
 }
+
+
+	
+	// int endian_test;
+	// int	local_endian;
+	// void	*mlxptr;
+
+	// endian_test = 0x11223344;
+ //  	if (((unsigned char *)&endian_test)[0] == 0x11)
+ //    	local_endian = 1;
+ //  	else
+ //    	local_endian = 0;
+
+// || (ac == 4 && !ft_strncmp(av[1], "julia", 5))
