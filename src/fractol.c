@@ -53,7 +53,7 @@ static void destroy_free_close(t_fractal *fractal)
 int run_initializers(t_fractal *fractal, char *name)
 {
 	fractal->divergence_threshold = 4;
-	fractal->iter = 300;
+	fractal->iter = 210;
 	fractal->name = name;
 
 	fractal->mlxptr = mlx_init();
@@ -85,7 +85,7 @@ double map(double ori_num, double min2, double max2, double max1)
 	new_dist = max2 - min2;
 	ori_dist = max1;
 	result = ((ori_num) / ori_dist) * new_dist + min2;
-	return	(result); 
+	return	(result);
 }
 
 t_complex	sum_complex(t_complex *a, t_complex *b)
@@ -119,17 +119,16 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 	t_complex	z;
 	t_complex	c;
 	t_complex	tmp;
-	ssize_t i;
-	int color;
+	double i;
+	double color;
 
 	z.re = map(x, -2, 2, WIDTH);
 	z.im = map(y, 2, -2, HEIGHT);
 
-	// c.re = z.re;
-	// c.im = z.im;
-	c.re = 0.25;
-	c.im = 0.47;
-
+	c.re = z.re;
+	c.im = z.im;
+	// c.re = 0.285;
+	// c.im = 0.01;
 
 	// check if point diverges
 	i = -1;
@@ -142,7 +141,8 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 		//if hypotenuse > 2, diverges
 		if ((pow(z.re, 2) + pow(z.im, 2)) > fractal->divergence_threshold)
 		{
-			color = map(i, JAZZ_BRONZE, JAZZ_COPPER, fractal->iter);
+			// color = map(i/60, CYAN, MAGENTA, fractal->iter);
+			color = map(i/5, PURPLE, WHITE, 2701*65);
 			putpixel(x, y, &fractal->img, color);
 			return ; 
 		}

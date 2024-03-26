@@ -30,6 +30,7 @@
 #define WIDTH 800
 #define HEIGHT 800
 
+
 #define BLACK 0x0
 #define WHITE 0xffffff
 #define RED 0xff0000
