@@ -176,14 +176,14 @@ int main (int ac, char *av[])
 	if(ac < 2 || ac > 4 || ac == 3)
 		return(errno = EINVAL, perror(F_ERRARGS), -1);
 
-
 	else if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) )
 	{
-		int check;		
-		check = run_initializers(&fractal, av[1]);
-		if (check == -1)
-			return(-1);
-		printf("run_init returns: %d\n", check);
+		// int check;		
+		// check = run_initializers(&fractal, av[1]);
+		// if (check == -1)
+		// 	return(-1);
+		// printf("run_init returns: %d\n", check);
+		run_initializers(&fractal, av[1]);
 
 		render(&fractal);
 
