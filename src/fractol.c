@@ -55,12 +55,25 @@ static void destroy_free_close(t_fractal *fractal, int err_flag)
 		return (errno = ENOMEM,	perror(F_ERRMLXPTR));
 }
 
+double map(double ori_num, double min2, double max2, double max1)
+{
+	double new_dist;
+	double ori_dist;
+	double result;
+
+	new_dist = max2 - min2;
+	ori_dist = max1;
+	result = ((ori_num) / ori_dist) * new_dist + min2;
+	return	(result);
+}
+
 void	init_zoom(t_fractal *f)
 {
-	f->zoom.min_x = 0;
-	f->zoom.max_x = 0;
-	f->zoom.min_y = 0;
-	f->zoom.max_y = 0;
+	f->z.min_x = -2;
+	f->z.max_x = 2;
+	f->z.min_y = -2;
+	// f->z.max_y = HEIGHT / WIDTH * (f->z.max_x - f->z.min_x) + f->z.min_y;
+	f->z.max_y = 2;
 }
 
 /*init the values in struct with error handling*/
@@ -90,17 +103,6 @@ int run_initializers(t_fractal *fractal, char *name)
 	//data_init(fractal);
 }
 
-double map(double ori_num, double min2, double max2, double max1)
-{
-	double new_dist;
-	double ori_dist;
-	double result;
-
-	new_dist = max2 - min2;
-	ori_dist = max1;
-	result = ((ori_num) / ori_dist) * new_dist + min2;
-	return	(result);
-}
 
 t_complex	sum_complex(t_complex *a, t_complex *b)
 {
@@ -128,7 +130,7 @@ void putpixel(int x, int y, t_img *img, int color)
 	*(unsigned int *)(img->pix_p + offset) = color;
 }
 
-void	handle_pixel(int x, int y, t_fractal *fractal)
+void	handle_pixel(int x, int y, t_fractal *f)
 {
 	t_complex	z;
 	t_complex	c;
@@ -139,30 +141,32 @@ void	handle_pixel(int x, int y, t_fractal *fractal)
 	z.re = map(x, -2, 2, WIDTH);
 	z.im = map(y, 2, -2, HEIGHT);
 
-	c.re = z.re;
-	c.im = z.im;
+	c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
+	c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
 	// c.re = 0.285;
 	// c.im = 0.01;
+	// c.re = z.re;
+	// c.im = z.im;
 
 	// check if point diverges
 	i = -1;
-	while (++i < fractal->iter)
+	while (++i < f->iter)
 	{
 		tmp = sq_complex(&z);
 		z = sum_complex(&tmp, &c);
 		// printf("z.re is: %f\n", z.re );
 
 		//if hypotenuse > 2, diverges
-		if ((pow(z.re, 2) + pow(z.im, 2)) > fractal->divergence_threshold)
+		if ((pow(z.re, 2) + pow(z.im, 2)) > f->divergence_threshold)
 		{
 			// color = map(i/60, CYAN, MAGENTA, fractal->iter);
 			color = map(i/5, PURPLE, WHITE, 2701*65);
-			putpixel(x, y, &fractal->img, color);
+			putpixel(x, y, &f->img, color);
 			return ; 
 		}
 	}
 	//else converges
-	putpixel(x, y, &fractal->img, JAZZ_TURQUOISE);
+	putpixel(x, y, &f->img, JAZZ_TURQUOISE);
 }
 
 /*threshold is -2 to +2, radius of 2*/
@@ -191,16 +195,28 @@ int close_window(int keycode, t_fractal *vars)
 	return (0);
 }
 
-// int process_mouse(int button, int x, int y, t_fractal *f)
-// {
-// 	(void) x;
-// 	(void) y;
-// 	if (button == 5)
-// 		//zoom out
-// 	render(f);
-// 	return (0);
+void	zoom(t_fractal *f, double k)
+{
+	double delta;
 
-// }
+	delta = f->z.max_x - f->z.min_x;
+	f->z.max_x += (delta - k * delta) / 2;
+	f->z.min_x = f->z.max_x + k * delta;
+	delta = f->z.max_y - f->z.min_y;
+	f->z.min_y += (delta - k * delta) / 2;
+	f->z.max_y = f->z.min_y + k * delta;  
+}
+
+int mouse_hook(int button, int x, int y, t_fractal *f)
+{
+	(void) x;
+	(void) y;
+	if (button == 5)
+		zoom(f, 1.1);
+	render(f);
+	return (0);
+
+}
 
 int main (int ac, char *av[])
 {
@@ -221,7 +237,7 @@ int main (int ac, char *av[])
 		render(&fractal);
 		mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
 		mlx_hook(fractal.mlxwin, 17, 1L<<2, close_window, &fractal);
-		// mlx_mouse_hook(fractal.mlxwin, process_mouse, &fractal);
+		mlx_mouse_hook(fractal.mlxwin, mouse_hook, &fractal);
 		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);

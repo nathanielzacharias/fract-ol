@@ -96,7 +96,7 @@ typedef struct s_fractal
 	t_img	img;
 	double	divergence_threshold;
 	ssize_t	iter;
-	t_zoom	zoom;
+	t_zoom	z;
 
 } t_fractal;
 
