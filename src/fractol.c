@@ -13,6 +13,7 @@
 #include "../includes/fractol.h"
 #include <stdio.h>
 
+
 // void	compute_fractal()
 // {
 // 	t_complex	z;
@@ -72,7 +73,6 @@ int run_initializers(t_fractal *fractal, char *name)
 		return (destroy_free_close(fractal, 1), -1);
 
 	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, &fractal->img.line_l, &fractal->img.endian);
-
 
 	return(0);
 	//events_init(fractal);
@@ -174,8 +174,9 @@ void	render(t_fractal *fractal)
 
 int close_window(int keycode, t_fractal *vars)
 {
-	if (keycode == 65307)
-		destroy_free_close(vars, 0);
+	// if (keycode == 65307)
+	(void) keycode;
+	destroy_free_close(vars, 0);
 	return (0);
 }
 
@@ -197,6 +198,7 @@ int main (int ac, char *av[])
 
 		render(&fractal);
 		mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
+		mlx_hook(fractal.mlxwin, 17, 0, close_window, &fractal);
 		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);
