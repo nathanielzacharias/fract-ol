@@ -44,11 +44,13 @@
 static void destroy_free_close(t_fractal *fractal, int err_flag)
 {
 	printf("in destroy free close \n");
+	mlx_destroy_image(fractal->mlxptr, fractal->img.ptr);
 	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
+	mlx_loop_end(fractal->mlxptr);
 	mlx_destroy_display(fractal->mlxptr);
 	free(fractal->mlxptr);
-	if (!err_flag) 
-		return (errno = 0, perror("Exited without errors"));
+	if (!err_flag) exit(0);
+		// return (errno = 0, perror("Exited without errors"));
 	else if (err_flag == 1)
 		return (errno = ENOMEM,	perror(F_ERRMLXPTR));
 }
@@ -198,7 +200,7 @@ int main (int ac, char *av[])
 
 		render(&fractal);
 		mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
-		mlx_hook(fractal.mlxwin, 17, 0, close_window, &fractal);
+		mlx_hook(fractal.mlxwin, 17, 1L<<2, close_window, &fractal);
 		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);
