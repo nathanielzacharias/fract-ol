@@ -169,6 +169,20 @@ void	render(t_fractal *fractal)
 	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
 
+#include <stdio.h>
+int printkey(int keycode, t_fractal *vars)
+{
+	// printf("keycode is: %d\n", keycode);
+	// printf("vars is: %s\n", vars->name );
+	if (keycode == 65307)
+	{
+		// mlx_destroy_window(vars->mlxptr, vars->mlxwin);	
+		destroy_free_close(vars);
+		// return (0);
+	}
+	return (0);
+}
+
 int main (int ac, char *av[])
 {
 	t_fractal fractal;
@@ -186,7 +200,7 @@ int main (int ac, char *av[])
 		run_initializers(&fractal, av[1]);
 
 		render(&fractal);
-
+		mlx_hook(fractal.mlxwin, 2, 1L<<0, printkey, &fractal);
 		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);
