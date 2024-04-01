@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/fractol.h"
+#include <stdio.h>
 
 // void	compute_fractal()
 // {
@@ -39,14 +40,16 @@
 // }
 
 /*exit gracefully*/
-static void destroy_free_close(t_fractal *fractal)
+static void destroy_free_close(t_fractal *fractal, int err_flag)
 {
 	printf("in destroy free close \n");
 	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
 	mlx_destroy_display(fractal->mlxptr);
 	free(fractal->mlxptr);
-	errno = ENOMEM;
-	perror(F_ERRMLXPTR);
+	if (!err_flag) 
+		return (errno = 0, perror("Exited without errors"));
+	else if (err_flag == 1)
+		return (errno = ENOMEM,	perror(F_ERRMLXPTR));
 }
 
 /*init the values in struct with error handling*/
@@ -58,15 +61,15 @@ int run_initializers(t_fractal *fractal, char *name)
 
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
-		return(destroy_free_close(fractal), -1);
+		return(destroy_free_close(fractal, 1), -1);
 
 	fractal->mlxwin = mlx_new_window(fractal->mlxptr, WIDTH, HEIGHT, fractal->name);
 	if(!(fractal->mlxwin))
-		return (destroy_free_close(fractal), -1);
+		return (destroy_free_close(fractal, 1), -1);
 
 	fractal->img.ptr = mlx_new_image(fractal->mlxptr, WIDTH, HEIGHT);
 	if(!(fractal->img.ptr))
-		return (destroy_free_close(fractal), -1);
+		return (destroy_free_close(fractal, 1), -1);
 
 	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, &fractal->img.line_l, &fractal->img.endian);
 
@@ -169,17 +172,10 @@ void	render(t_fractal *fractal)
 	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
 
-#include <stdio.h>
-int printkey(int keycode, t_fractal *vars)
+int close_window(int keycode, t_fractal *vars)
 {
-	// printf("keycode is: %d\n", keycode);
-	// printf("vars is: %s\n", vars->name );
 	if (keycode == 65307)
-	{
-		// mlx_destroy_window(vars->mlxptr, vars->mlxwin);	
-		destroy_free_close(vars);
-		// return (0);
-	}
+		destroy_free_close(vars, 0);
 	return (0);
 }
 
@@ -200,7 +196,7 @@ int main (int ac, char *av[])
 		run_initializers(&fractal, av[1]);
 
 		render(&fractal);
-		mlx_hook(fractal.mlxwin, 2, 1L<<0, printkey, &fractal);
+		mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
 		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);
