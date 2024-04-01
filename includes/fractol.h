@@ -80,6 +80,14 @@ typedef struct s_img
 	int		line_l;
 } t_img;
 
+typedef struct s_zoom
+{
+	double min_x;
+	double max_x;
+	double min_y;
+	double max_y;
+} t_zoom;
+
 typedef struct s_fractal
 {
 	char	*name;
@@ -88,6 +96,7 @@ typedef struct s_fractal
 	t_img	img;
 	double	divergence_threshold;
 	ssize_t	iter;
+	t_zoom	zoom;
 
 } t_fractal;
 
@@ -97,5 +106,6 @@ typedef struct s_complex
 	double	re;
 	double	im;
 } t_complex;
+
 
 #endif

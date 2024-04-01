@@ -55,6 +55,14 @@ static void destroy_free_close(t_fractal *fractal, int err_flag)
 		return (errno = ENOMEM,	perror(F_ERRMLXPTR));
 }
 
+void	init_zoom(t_fractal *f)
+{
+	f->zoom.min_x = 0;
+	f->zoom.max_x = 0;
+	f->zoom.min_y = 0;
+	f->zoom.max_y = 0;
+}
+
 /*init the values in struct with error handling*/
 int run_initializers(t_fractal *fractal, char *name)
 {
@@ -76,6 +84,7 @@ int run_initializers(t_fractal *fractal, char *name)
 
 	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, &fractal->img.line_l, &fractal->img.endian);
 
+	init_zoom(fractal);
 	return(0);
 	//events_init(fractal);
 	//data_init(fractal);
@@ -182,6 +191,17 @@ int close_window(int keycode, t_fractal *vars)
 	return (0);
 }
 
+// int process_mouse(int button, int x, int y, t_fractal *f)
+// {
+// 	(void) x;
+// 	(void) y;
+// 	if (button == 5)
+// 		//zoom out
+// 	render(f);
+// 	return (0);
+
+// }
+
 int main (int ac, char *av[])
 {
 	t_fractal fractal;
@@ -201,6 +221,7 @@ int main (int ac, char *av[])
 		render(&fractal);
 		mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
 		mlx_hook(fractal.mlxwin, 17, 1L<<2, close_window, &fractal);
+		// mlx_mouse_hook(fractal.mlxwin, process_mouse, &fractal);
 		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);
