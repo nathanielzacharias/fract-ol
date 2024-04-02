@@ -27,12 +27,12 @@
 
 #include "../libft/libft.h"
 
-#define WIDTH 800
-#define HEIGHT 800
+#define WIDTH 700
+#define HEIGHT 700
 #define TRANSLATION_STEP 0.2
 #define SCALING_STEP 0.1
-#define ITERATIONS 17
-#define COLORSPACE 256
+#define ITERATIONS 42
+#define COLORSPACE 1024
 
 
 #define BLACK 0x0
@@ -97,15 +97,15 @@ typedef struct s_img
 
 typedef struct s_zoom
 {
-	double min_x;
-	double max_x;
-	double min_y;
-	double max_y;
-	double factor;
-	double minxold;
-	double maxxold;
-	double minyold;
-	double maxyold;
+	float min_x;
+	float max_x;
+	float min_y;
+	float max_y;
+	float factor;
+	float minxold;
+	float maxxold;
+	float minyold;
+	float maxyold;
 } t_zoom;
 
 typedef struct s_fractal
@@ -114,7 +114,7 @@ typedef struct s_fractal
 	void	*mlxptr;
 	void	*mlxwin;
 	t_img	img;
-	double	divergence_threshold;
+	int	divergence_threshold;
 	ssize_t	iter;
 	t_zoom	z;
 
@@ -123,8 +123,8 @@ typedef struct s_fractal
 
 typedef struct s_complex
 {
-	double	re;
-	double	im;
+	float	re;
+	float	im;
 } t_complex;
 
 

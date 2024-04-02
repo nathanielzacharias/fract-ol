@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/fractol.h"
-#include <limits.h>
 
 /*exit gracefully*/
 static void destroy_free_close(t_fractal *fractal, int err_flag)
@@ -27,11 +26,11 @@ static void destroy_free_close(t_fractal *fractal, int err_flag)
 		return (errno = EIO, perror(F_ERRGENERIC));
 }
 
-double map_win_to_complex(double ori_num, double min2, double max2, double max1)
+float map_win_to_complex(float ori_num, float min2, float max2, float max1)
 {
-	double new_dist;
-	double ori_dist;
-	double result;
+	float new_dist;
+	float ori_dist;
+	float result;
 
 	new_dist = max2 - min2;
 	ori_dist = max1;
@@ -100,13 +99,22 @@ void putpixel(int x, int y, t_img *img, int color)
 	*(unsigned int *)(img->pix_p + offset) = color;
 }
 
-int map_iter_to_argb(int i, int lower, int upper, int old_space)
+float map_iter_to_argb(float i, int lower, int upper, int old_space)
 {
-	int color;
+	float color;
 	int new_space;
 
 	new_space = upper - lower;
 	color = (i / old_space) * new_space + lower;
+
+	// color %= 16;
+	// char r;
+	// char g;
+	// char b;
+	// b = ((color % (256)) + 7) >> 0;
+	// g = ((color % (256)) + 17) >> 8;
+	// r = ((color % (256)) + 27) >> 16;
+	// color = (r | g | b);
 	return	(color);
 }
 
@@ -115,8 +123,8 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	t_complex	z;
 	t_complex	c;
 	t_complex	tmp;
-	double i;
-	double color;
+	float i;
+	float color;
 
 	z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH) ;
 	z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT) ;
@@ -131,7 +139,7 @@ void	handle_pixel(int x, int y, t_fractal *f)
 		z = sum_complex(&tmp, &c);
 		if ((pow(z.re, 2) + pow(z.im, 2)) > f->divergence_threshold)
 		{
-			color = map_iter_to_argb(i, PURPLE, WHITE, COLORSPACE);
+			color = map_iter_to_argb(i, PURPLE, WHITE, 2048);
 			putpixel(x, y, &f->img, color);
 			return ; 
 		}
@@ -146,6 +154,7 @@ void	render(t_fractal *fractal)
 	int x;
 	int y;
 
+	mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
 	y = -1;
 	while (++y < HEIGHT)
 	{
@@ -153,7 +162,6 @@ void	render(t_fractal *fractal)
 		while (++x < WIDTH)
 			handle_pixel(x, y, fractal);
 	}
-	mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
 	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
 
@@ -199,8 +207,8 @@ int mouse_hook(int button, int x, int y, t_fractal *f)
 
 void translate(int k, t_fractal *f)
 {
-	double dx;
-	double dy;
+	float dx;
+	float dy;
 
 	dx = f->z.max_x - f->z.min_x;
 	dy = f->z.max_y - f->z.min_y;
