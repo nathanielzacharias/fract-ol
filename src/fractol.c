@@ -143,10 +143,6 @@ void	handle_pixel(int x, int y, t_fractal *f)
 
 	c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
 	c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
-	// c.re = 0.285;
-	// c.im = 0.01;
-	// c.re = z.re;
-	// c.im = z.im;
 
 	// check if point diverges
 	i = -1;
@@ -232,6 +228,25 @@ void translate(int k, double m, t_fractal *f)
 			f->z.max_x += m * d;
 			f->z.min_x += m * d;
 		}
+		else if (k == LF)
+		{
+			f->z.max_x -= m * d;
+			f->z.min_x -= m * d;
+		}
+	}
+	else if (k == UP || k == DW)
+	{
+		d = f->z.max_y - f->z.min_y;
+		if (k == UP)
+		{
+			f->z.max_y += m * d;
+			f->z.min_y += m * d;
+		}
+		else if (k == DW)
+		{			
+			f->z.max_y -= m * d;
+			f->z.min_y -= m * d;
+		}
 	}
 	render(f);
 }
@@ -239,7 +254,7 @@ void translate(int k, double m, t_fractal *f)
 int	key_hook(int k, t_fractal *f)
 {
 	if (k == UP || k == DW || k == LF || k == RG)
-		translate(k, 0.3, f);
+		translate(k, TRANSLATION_STEP, f);
 	return (0);
 }
 
