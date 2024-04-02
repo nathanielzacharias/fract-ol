@@ -11,34 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/fractol.h"
-#include <stdio.h>
-
-
-// void	compute_fractal()
-// {
-// 	t_complex	z;
-// 	t_complex	c;
-// 	ssize_t iter;
-// 	double temp_real;
-
-// 	z.re = 0;
-// 	z.im = 0;
-// 	c.re = 0.25;
-// 	c.im = 0.4;
-
-// 	iter = -1;
-// 	while (++iter < 30)
-// 	{
-// 		// z.re = pow(z.re, 2) - pow(z.im, 2);
-// 		// z.re = (z.re * z.re) - (z.im * z.im);
-// 		temp_real = pow(z.re, 2) - pow(z.im, 2);
-// 		z.im = 2 * z.re * z.im;
-// 		z.re = temp_rea0.2l;
-// 		z.re += c.re;
-// 		z.im += c.im;
-// 		// printf("iter is: %d, z.re is: %f, z.im is: %f \n", iter, z.re, z.im);
-// 	}
-// }
 
 /*exit gracefully*/
 static void destroy_free_close(t_fractal *fractal, int err_flag)
@@ -79,27 +51,21 @@ void	init_zoom(t_fractal *f)
 int run_initializers(t_fractal *fractal, char *name)
 {
 	fractal->divergence_threshold = 4;
-	fractal->iter = 60;
+	fractal->iter = ITERATIONS;
 	fractal->name = name;
 
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
 		return(destroy_free_close(fractal, 1), -1);
-
 	fractal->mlxwin = mlx_new_window(fractal->mlxptr, WIDTH, HEIGHT, fractal->name);
 	if(!(fractal->mlxwin))
 		return (destroy_free_close(fractal, 1), -1);
-
 	fractal->img.ptr = mlx_new_image(fractal->mlxptr, WIDTH, HEIGHT);
 	if(!(fractal->img.ptr))
 		return (destroy_free_close(fractal, 1), -1);
-
 	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, &fractal->img.line_l, &fractal->img.endian);
-
 	init_zoom(fractal);
 	return(0);
-	//events_init(fractal);
-	//data_init(fractal);
 }
 
 
