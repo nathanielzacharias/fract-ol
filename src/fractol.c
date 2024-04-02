@@ -26,7 +26,7 @@ static void destroy_free_close(t_fractal *fractal, int err_flag)
 		return (errno = EIO, perror(F_ERRGENERIC));
 }
 
-double map(double ori_num, double min2, double max2, double max1)
+double map_win_to_complex(double ori_num, double min2, double max2, double max1)
 {
 	double new_dist;
 	double ori_dist;
@@ -43,8 +43,12 @@ void	init_zoom(t_fractal *f)
 	f->z.min_x = -2;
 	f->z.max_x = 2;
 	f->z.min_y = -2;
-	// f->z.max_y = HEIGHT / WIDTH * (f->z.max_x - f->z.min_x) + f->z.min_y;
 	f->z.max_y = 2;
+	f->z.factor = 1;
+	f->z.minxold = f->z.min_x;
+	f->z.maxxold = f->z.max_x;
+	f->z.minyold = f->z.min_y;
+	f->z.maxyold = f->z.max_y;
 }
 
 /*init the values in struct with error handling*/
@@ -95,6 +99,16 @@ void putpixel(int x, int y, t_img *img, int color)
 	*(unsigned int *)(img->pix_p + offset) = color;
 }
 
+int map_iter_to_argb(double i, int lower, int upper, int old_space)
+{
+	int color;
+	int new_space;
+
+	new_space = upper - lower;
+	color = (i / old_space) * new_space + lower;
+	return	(color);
+}
+
 void	handle_pixel(int x, int y, t_fractal *f)
 {
 	t_complex	z;
@@ -103,10 +117,22 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	double i;
 	double color;
 
-	z.re = map(x, f->z.min_x, f->z.max_x, WIDTH);
-	z.im = map(y, f->z.max_y, f->z.min_y, HEIGHT);
+	// z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH) * f->z.factor;
+	// z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT) * f->z.factor;
+	z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH) ;
+	z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT) ;
 	c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
 	c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
+
+	// z.re = map(x, f->z.min_x, f->z.max_x, WIDTH);
+	// z.im = map(y, f->z.max_y, f->z.min_y, HEIGHT);
+	// c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
+	// c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
+
+	// z.re = map(x, f->z.min_x, f->z.max_x,  (fabs(f->z.minxold - f->z.maxxold))*WIDTH);
+	// z.im = map(y, f->z.max_y, f->z.min_y, (f->z.maxyold - f->z.minyold) * HEIGHT);
+	// c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / (  (fabs(f->z.minxold - f->z.maxxold))*WIDTH);
+	// c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / ((f->z.maxyold - f->z.minyold) * HEIGHT);
 
 	// check if point diverges
 	i = -1;
@@ -117,7 +143,7 @@ void	handle_pixel(int x, int y, t_fractal *f)
 		if ((pow(z.re, 2) + pow(z.im, 2)) > f->divergence_threshold)
 		{
 			// color = map(i/60, CYAN, MAGENTA, fractal->iter);
-			color = map(i/5, PURPLE, WHITE, 2701*65);
+			color = map_iter_to_argb(i/5, PURPLE, WHITE, 2701*65);
 			putpixel(x, y, &f->img, color);
 			return ; 
 		}
@@ -139,6 +165,7 @@ void	render(t_fractal *fractal)
 		while (++x < WIDTH)
 			handle_pixel(x, y, fractal);
 	}
+	// mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
 	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
 
@@ -149,16 +176,24 @@ int close_window(int k, t_fractal *f)
 	return (0);
 }
 
+int	clicked_close(t_fractal *f)
+{
+	destroy_free_close(f, F_NO_ERR);
+	return (0);
+}
+
 void	zoom(t_fractal *f, double k)
 {
-	double delta;
+	// f->z.minxold = f->z.min_x;
+	// f->z.maxxold = f->z.max_x;
+	// f->z.minyold = f->z.min_y;
+	// f->z.maxyold = f->z.max_y;
 
-	delta = f->z.max_x - f->z.min_x;
-	f->z.max_x += (delta - k * delta) / 2;
-	f->z.min_x = f->z.max_x + k * delta;
-	delta = f->z.max_y - f->z.min_y;
-	f->z.min_y += (delta - k * delta) / 2;
-	f->z.max_y = f->z.min_y + k * delta;  
+	f->z.max_x *= k;
+	f->z.min_x *= k;
+	f->z.max_y *= k;
+	f->z.min_y *= k;
+	f->z.factor = k;
 }
 
 int mouse_hook(int button, int x, int y, t_fractal *f)
@@ -166,7 +201,11 @@ int mouse_hook(int button, int x, int y, t_fractal *f)
 	(void) x;
 	(void) y;
 	if (button == 5)
+	{
+		// mlx_flush_event(f->mlxptr);
+		// printf("button is: %d\n", button );
 		zoom(f, 1.1);
+	}
 	else if (button == 4)
 		zoom(f, 0.9);
 	render(f);
@@ -182,23 +221,23 @@ void translate(int k, t_fractal *f)
 	dy = f->z.max_y - f->z.min_y;
 	if (k == RG)
 		{
-			f->z.max_x += TRANSLATION_STEP * dx;
-			f->z.min_x += TRANSLATION_STEP * dx;
+			f->z.max_x += TRANSLATION_STEP * dx * f->z.factor;
+			f->z.min_x += TRANSLATION_STEP * dx * f->z.factor;
 		}
 	else if (k == LF)
 		{
-			f->z.max_x -= TRANSLATION_STEP * dx;
-			f->z.min_x -= TRANSLATION_STEP * dx;
+			f->z.max_x -= TRANSLATION_STEP * dx * f->z.factor;
+			f->z.min_x -= TRANSLATION_STEP * dx * f->z.factor;
 		}
 	else if (k == DW)
 		{			
-			f->z.max_y -= TRANSLATION_STEP * dy;
-			f->z.min_y -= TRANSLATION_STEP * dy;
+			f->z.max_y -= TRANSLATION_STEP * dy * f->z.factor;
+			f->z.min_y -= TRANSLATION_STEP * dy * f->z.factor;
 		}
 	else if (k == UP)
 		{
-			f->z.max_y += TRANSLATION_STEP * dy;
-			f->z.min_y += TRANSLATION_STEP * dy;
+			f->z.max_y += TRANSLATION_STEP * dy * f->z.factor;
+			f->z.min_y += TRANSLATION_STEP * dy * f->z.factor;
 		}
 }
 
@@ -227,13 +266,13 @@ void choose_fractal(int ac, char *av[], t_fractal *f)
 		run_initializers(f, av[1]);
 }
 
-void listen_for_events(t_fractal *fractal)
+void listen_for_events(t_fractal *f)
 {
-	mlx_hook(fractal->mlxwin, 2, 1L<<0, close_window, fractal);
-	mlx_hook(fractal->mlxwin, 17, 1L<<2, close_window, fractal);
-	mlx_mouse_hook(fractal->mlxwin, mouse_hook, fractal);
-	mlx_key_hook(fractal->mlxwin, key_hook, fractal);
-	mlx_loop(fractal->mlxptr);
+	mlx_hook(f->mlxwin, 2, 1L<<0, close_window, f); //keypress ESC
+	mlx_hook(f->mlxwin, 17, 0, clicked_close, f); //DestroyNotify
+	mlx_mouse_hook(f->mlxwin, mouse_hook, f);
+	mlx_key_hook(f->mlxwin, key_hook, f);
+	mlx_loop(f->mlxptr);
 }
 
 int main (int ac, char *av[])

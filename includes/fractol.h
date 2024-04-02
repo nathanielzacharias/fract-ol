@@ -30,7 +30,7 @@
 #define WIDTH 800
 #define HEIGHT 800
 #define TRANSLATION_STEP 0.2
-#define ITERATIONS 42
+#define ITERATIONS 13
 
 
 #define BLACK 0x0
@@ -66,8 +66,6 @@
 #define JAZZ_BRONZE 0xcd7f32
 #define JAZZ_COPPER 0xb87333
 
-
-
 /*Custom ERR messages to pass to perror()*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
@@ -97,6 +95,11 @@ typedef struct s_zoom
 	double max_x;
 	double min_y;
 	double max_y;
+	double factor;
+	double minxold;
+	double maxxold;
+	double minyold;
+	double maxyold;
 } t_zoom;
 
 typedef struct s_fractal
