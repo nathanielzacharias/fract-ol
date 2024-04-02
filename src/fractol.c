@@ -165,7 +165,7 @@ void	render(t_fractal *fractal)
 		while (++x < WIDTH)
 			handle_pixel(x, y, fractal);
 	}
-	// mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
+	mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
 	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
 

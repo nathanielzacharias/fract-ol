@@ -30,7 +30,7 @@
 #define WIDTH 800
 #define HEIGHT 800
 #define TRANSLATION_STEP 0.2
-#define ITERATIONS 13
+#define ITERATIONS 21
 
 
 #define BLACK 0x0
