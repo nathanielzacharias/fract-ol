@@ -188,11 +188,10 @@ void	render(t_fractal *fractal)
 	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
 
-int close_window(int keycode, t_fractal *vars)
+int close_window(int k, t_fractal *vars)
 {
-	if (keycode == 65307)
-	// (void) keycode;
-	destroy_free_close(vars, 0);
+	if (k == ESC)
+		destroy_free_close(vars, 0);
 	return (0);
 }
 
