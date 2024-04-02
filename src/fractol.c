@@ -274,30 +274,29 @@ int has_errors(int ac, char	*av[])
 
 
 
+void choose_fractal(int ac, char *av[], t_fractal *f)
+{
+	
+	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)))
+		// do_mandelbrot(f, "mandelbrot");
+		run_initializers(f, av[1]);
+	// return (f);
+}
 
 int main (int ac, char *av[])
 {
 	t_fractal fractal;
 
 	if (has_errors (ac, av))
-		return (42);
-	choose_fractal(ac, av);
+		return (-42);
+	choose_fractal(ac, av, &fractal);
+	render(&fractal);
+	mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
+	mlx_hook(fractal.mlxwin, 17, 1L<<2, close_window, &fractal);
+	mlx_mouse_hook(fractal.mlxwin, mouse_hook, &fractal);
+	mlx_key_hook(fractal.mlxwin, key_hook, &fractal);
+	mlx_loop(fractal.mlxptr);
 
-	else if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) )
-	{
-		// int check;		
-		// check = run_initializers(&fractal, av[1]);
-		// if (check == -1)
-		// 	return(-1);
-		// printf("run_init returns: %d\n", check);
-		run_initializers(&fractal, av[1]);
-		render(&fractal);
-		mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
-		mlx_hook(fractal.mlxwin, 17, 1L<<2, close_window, &fractal);
-		mlx_mouse_hook(fractal.mlxwin, mouse_hook, &fractal);
-		mlx_key_hook(fractal.mlxwin, key_hook, &fractal);
-		mlx_loop(fractal.mlxptr);
-	}	
 	return (0);
 }
 
