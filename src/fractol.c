@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/fractol.h"
+#include <limits.h>
 
 /*exit gracefully*/
 static void destroy_free_close(t_fractal *fractal, int err_flag)
@@ -99,7 +100,7 @@ void putpixel(int x, int y, t_img *img, int color)
 	*(unsigned int *)(img->pix_p + offset) = color;
 }
 
-int map_iter_to_argb(double i, int lower, int upper, int old_space)
+int map_iter_to_argb(int i, int lower, int upper, int old_space)
 {
 	int color;
 	int new_space;
@@ -136,14 +137,14 @@ void	handle_pixel(int x, int y, t_fractal *f)
 
 	// check if point diverges
 	i = -1;
-	while (++i < f->iter)
+	while (++i < (f->iter * (1 / f->z.factor)))
 	{
 		tmp = sq_complex(&z);
 		z = sum_complex(&tmp, &c);
 		if ((pow(z.re, 2) + pow(z.im, 2)) > f->divergence_threshold)
 		{
 			// color = map(i/60, CYAN, MAGENTA, fractal->iter);
-			color = map_iter_to_argb(i/5, PURPLE, WHITE, 2701*65);
+			color = map_iter_to_argb(i, PURPLE, WHITE, COLORSPACE);
 			putpixel(x, y, &f->img, color);
 			return ; 
 		}
