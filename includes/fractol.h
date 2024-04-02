@@ -31,8 +31,8 @@
 #define HEIGHT 700
 #define TRANSLATION_STEP 0.2
 #define SCALING_STEP 0.1
-#define ITERATIONS 42
-#define COLORSPACE 1024
+#define ITERATIONS 100
+#define COLORSPACE 16000
 
 
 #define BLACK 0x0
@@ -86,6 +86,10 @@
 #define SCROLL_DOWN 4
 #define SCROLL_UP 5
 
+/*fractal name*/
+#define MANDELBROT 1
+#define JULIA 2
+
 typedef struct s_img
 {
 	void	*ptr;
@@ -110,13 +114,16 @@ typedef struct s_zoom
 
 typedef struct s_fractal
 {
-	char	*name;
+	int		name;
 	void	*mlxptr;
 	void	*mlxwin;
 	t_img	img;
 	int	divergence_threshold;
 	ssize_t	iter;
 	t_zoom	z;
+	float 	julia_c_im;
+	float 	julia_c_re;
+
 
 } t_fractal;
 

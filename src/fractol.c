@@ -12,6 +12,33 @@
 
 #include "../includes/fractol.h"
 
+float ft_atof(char *str)
+{
+	char *ori_ptr;
+	double result_atoi;
+	double result_post_decimal;
+	size_t len;
+	int		sign;
+
+	sign = 1;
+	ori_ptr = str;
+	while (*str == 32 || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-')
+		sign = -1;
+	result_atoi = (float) ft_atoi(str);
+	while (*str && *str != '.')
+		str++;
+	if (*str && *str == '.')
+		str++;
+	result_post_decimal = (float) ft_atoi(str);
+	len = ft_strlen(str);
+	while (len--)
+		result_post_decimal /= 10;
+	return(sign * (result_atoi + result_post_decimal));
+}
+
+
 /*exit gracefully*/
 static void destroy_free_close(t_fractal *fractal, int err_flag)
 {
@@ -40,10 +67,10 @@ float map_win_to_complex(float ori_num, float min2, float max2, float max1)
 
 void	init_zoom(t_fractal *f)
 {
-	f->z.min_x = -2;
-	f->z.max_x = 2;
-	f->z.min_y = -2;
-	f->z.max_y = 2;
+	f->z.min_x = -1.5;
+	f->z.max_x = 1.5;
+	f->z.min_y = -1.5;
+	f->z.max_y = 1.5;
 	f->z.factor = 1;
 	f->z.minxold = f->z.min_x;
 	f->z.maxxold = f->z.max_x;
@@ -52,7 +79,7 @@ void	init_zoom(t_fractal *f)
 }
 
 /*init the values in struct with error handling*/
-int run_initializers(t_fractal *fractal, char *name)
+int run_initializers(t_fractal *fractal, int name, char *title)
 {
 	fractal->divergence_threshold = 4;
 	fractal->iter = ITERATIONS;
@@ -61,7 +88,7 @@ int run_initializers(t_fractal *fractal, char *name)
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
 		return(destroy_free_close(fractal, 1), -1);
-	fractal->mlxwin = mlx_new_window(fractal->mlxptr, WIDTH, HEIGHT, fractal->name);
+	fractal->mlxwin = mlx_new_window(fractal->mlxptr, WIDTH, HEIGHT, title);
 	if(!(fractal->mlxwin))
 		return (destroy_free_close(fractal, 1), -1);
 	fractal->img.ptr = mlx_new_image(fractal->mlxptr, WIDTH, HEIGHT);
@@ -106,15 +133,6 @@ float map_iter_to_argb(float i, int lower, int upper, int old_space)
 
 	new_space = upper - lower;
 	color = (i / old_space) * new_space + lower;
-
-	// color %= 16;
-	// char r;
-	// char g;
-	// char b;
-	// b = ((color % (256)) + 7) >> 0;
-	// g = ((color % (256)) + 17) >> 8;
-	// r = ((color % (256)) + 27) >> 16;
-	// color = (r | g | b);
 	return	(color);
 }
 
@@ -125,27 +143,38 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	t_complex	tmp;
 	float i;
 	float color;
+	int abs_z;
 
 	z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH) ;
 	z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT) ;
-	c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
-	c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
-
+	if (f->name == MANDELBROT)
+	{
+		c.re = x * (f->z.max_x - f->z.min_x) / WIDTH  + f->z.min_x;
+		c.im = y * (f->z.min_y - f->z.max_y) / HEIGHT + f->z.max_y;
+	}
+	else if (f->name == JULIA)
+	{
+		c.re = f->julia_c_re ;
+		c.im = f->julia_c_im ;
+	}
 	// check if point diverges
 	i = -1;
 	while (++i < f->iter)
 	{
 		tmp = sq_complex(&z);
 		z = sum_complex(&tmp, &c);
-		if ((pow(z.re, 2) + pow(z.im, 2)) > f->divergence_threshold)
+		abs_z = pow(z.re, 2) + pow(z.im, 2);
+		if (abs_z > f->divergence_threshold)
 		{
-			color = map_iter_to_argb(i, PURPLE, WHITE, 2048);
+			i = i + 1 - (log(abs_z)) / log(2); 
+			// color = map_iter_to_argb(i, PURPLE, WHITE, WHITE - PURPLE);
+			color = map_iter_to_argb(i, JAZZ_GREEN, JAZZ_PINK, JAZZ_PINK - JAZZ_GREEN);
 			putpixel(x, y, &f->img, color);
 			return ; 
 		}
 	}
 	//else converges
-	putpixel(x, y, &f->img, JAZZ_TURQUOISE);
+	putpixel(x, y, &f->img, JAZZ_LIME);
 }
 
 /*threshold is -2 to +2, radius of 2*/
@@ -256,7 +285,13 @@ void choose_fractal(int ac, char *av[], t_fractal *f)
 	
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)))
 		// do_mandelbrot(f, "mandelbrot");
-		run_initializers(f, av[1]);
+		run_initializers(f, MANDELBROT, av[1]);
+	else if ((ac == 4 && !ft_strncmp(av[1], "julia", 5)))
+	{
+		f->julia_c_re = ft_atof(av[2]);
+		f->julia_c_im = ft_atof(av[3]);
+		run_initializers(f, JULIA, av[1]);
+	}
 }
 
 void listen_for_events(t_fractal *f)
