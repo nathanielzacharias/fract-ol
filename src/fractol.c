@@ -138,8 +138,8 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	double i;
 	double color;
 
-	z.re = map(x, -2, 2, WIDTH);
-	z.im = map(y, 2, -2, HEIGHT);
+	z.re = map(x, f->z.min_x, f->z.max_x, WIDTH);
+	z.im = map(y, f->z.max_y, f->z.min_y, HEIGHT);
 
 	c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
 	c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
