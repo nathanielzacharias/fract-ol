@@ -105,7 +105,6 @@ void	handle_pixel(int x, int y, t_fractal *f)
 
 	z.re = map(x, f->z.min_x, f->z.max_x, WIDTH);
 	z.im = map(y, f->z.max_y, f->z.min_y, HEIGHT);
-
 	c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
 	c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
 
@@ -115,9 +114,6 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	{
 		tmp = sq_complex(&z);
 		z = sum_complex(&tmp, &c);
-		// printf("z.re is: %f\n", z.re );
-
-		//if hypotenuse > 2, diverges
 		if ((pow(z.re, 2) + pow(z.im, 2)) > f->divergence_threshold)
 		{
 			// color = map(i/60, CYAN, MAGENTA, fractal->iter);
@@ -136,23 +132,20 @@ void	render(t_fractal *fractal)
 	int x;
 	int y;
 
-	// mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
 	y = -1;
 	while (++y < HEIGHT)
 	{
 		x = -1;
 		while (++x < WIDTH)
-		{
 			handle_pixel(x, y, fractal);
-		}
 	}
 	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
 }
 
-int close_window(int k, t_fractal *vars)
+int close_window(int k, t_fractal *f)
 {
 	if (k == ESC)
-		destroy_free_close(vars, 0);
+		destroy_free_close(f, F_NO_ERR);
 	return (0);
 }
 

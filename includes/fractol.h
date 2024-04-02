@@ -73,6 +73,7 @@
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
 #define F_ERRMLXPTR "creating ptr for MLX ptr/display/window/img returned null"
 #define F_ERRGENERIC "Exited with err_flag == 1"
+#define F_NO_ERR 0
 
 /*keys*/
 #define UP 65362
