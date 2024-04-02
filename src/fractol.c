@@ -43,16 +43,15 @@
 /*exit gracefully*/
 static void destroy_free_close(t_fractal *fractal, int err_flag)
 {
-	printf("in destroy free close \n");
 	mlx_destroy_image(fractal->mlxptr, fractal->img.ptr);
 	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
 	mlx_loop_end(fractal->mlxptr);
 	mlx_destroy_display(fractal->mlxptr);
 	free(fractal->mlxptr);
-	if (!err_flag) exit(0);
-		// return (errno = 0, perror("Exited without errors"));
+	if (!err_flag) 
+		exit(0);
 	else if (err_flag == 1)
-		return (errno = ENOMEM,	perror(F_ERRMLXPTR));
+		return (errno = EIO, perror(F_ERRGENERIC));
 }
 
 double map(double ori_num, double min2, double max2, double max1)
@@ -216,15 +215,6 @@ int mouse_hook(int button, int x, int y, t_fractal *f)
 
 }
 
-// void step(t_fractal f, double md, int plus, char axis)
-// {
-// 	if (plus == 1 && axis == 'x')
-// 	{
-// 		f->z.max_x += m * d;
-// 		f->z.min_x += m * d;
-// 	}
-// }
-
 void translate(int k, t_fractal *f)
 {
 	double dx;
@@ -272,8 +262,6 @@ int input_has_errors(int ac, char	*av[])
 		return (0);
 }
 
-
-
 void choose_fractal(int ac, char *av[], t_fractal *f)
 {
 	
@@ -295,7 +283,7 @@ int main (int ac, char *av[])
 {
 	t_fractal f;
 
-	if (input_has_errors (ac, av))
+	if (input_has_errors(ac, av))
 		return (-42);
 	else
 	{

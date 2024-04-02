@@ -71,6 +71,7 @@
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
 #define F_ERRMLXPTR "creating ptr for MLX ptr/display/window/img returned null"
+#define F_ERRGENERIC "Exited with err_flag == 1"
 
 /*keys*/
 #define UP 65362
