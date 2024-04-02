@@ -258,20 +258,30 @@ int	key_hook(int k, t_fractal *f)
 {
 	if (k == UP || k == DW || k == LF || k == RG)
 		translate(k, f);
+
 	render(f);
 	return (0);
 }
+
+int has_errors(int ac, char	*av[])
+{
+	(void) av;
+	if(ac < 2 || ac > 4 || ac == 3)
+		return(errno = EINVAL, perror(F_ERRARGS), 1);
+	else
+		return (0);
+}
+
+
 
 
 int main (int ac, char *av[])
 {
 	t_fractal fractal;
 
-	// if (has_errors (ac, av))
-	// 	return (1);
-
-	if(ac < 2 || ac > 4 || ac == 3)
-		return(errno = EINVAL, perror(F_ERRARGS), -1);
+	if (has_errors (ac, av))
+		return (42);
+	choose_fractal(ac, av);
 
 	else if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10) ) )
 	{
