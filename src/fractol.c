@@ -165,13 +165,12 @@ int mouse_hook(int button, int x, int y, t_fractal *f)
 {
 	(void) x;
 	(void) y;
-	if (button == 5) //printf("button is: %d\n",button );
+	if (button == 5)
 		zoom(f, 1.1);
 	else if (button == 4)
 		zoom(f, 0.9);
 	render(f);
 	return (0);
-
 }
 
 void translate(int k, t_fractal *f)
@@ -207,7 +206,6 @@ int	key_hook(int k, t_fractal *f)
 {
 	if (k == UP || k == DW || k == LF || k == RG)
 		translate(k, f);
-
 	render(f);
 	return (0);
 }
