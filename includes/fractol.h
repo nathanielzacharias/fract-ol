@@ -71,6 +71,13 @@
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
 #define F_ERRMLXPTR "creating ptr for MLX ptr/display/window/img returned null"
 
+/*keys*/
+#define UP 65362
+#define DW 65364
+#define LF 65361
+#define RG 65363
+#define ESC 65307
+
 typedef struct s_img
 {
 	void	*ptr;

@@ -80,7 +80,7 @@ void	init_zoom(t_fractal *f)
 int run_initializers(t_fractal *fractal, char *name)
 {
 	fractal->divergence_threshold = 4;
-	fractal->iter = 210;
+	fractal->iter = 60;
 	fractal->name = name;
 
 	fractal->mlxptr = mlx_init();
@@ -175,6 +175,7 @@ void	render(t_fractal *fractal)
 	int x;
 	int y;
 
+	// mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
 	y = -1;
 	while (++y < HEIGHT)
 	{
@@ -189,8 +190,8 @@ void	render(t_fractal *fractal)
 
 int close_window(int keycode, t_fractal *vars)
 {
-	// if (keycode == 65307)
-	(void) keycode;
+	if (keycode == 65307)
+	// (void) keycode;
 	destroy_free_close(vars, 0);
 	return (0);
 }
@@ -211,16 +212,45 @@ int mouse_hook(int button, int x, int y, t_fractal *f)
 {
 	(void) x;
 	(void) y;
-	if (button == 5)
+	if (button == 5) //printf("button is: %d\n",button );
 		zoom(f, 1.1);
+	else if (button == 4)
+		zoom(f, 0.9);
 	render(f);
 	return (0);
 
 }
 
+void translate(int k, double m, t_fractal *f)
+{
+	double d;
+
+	if (k == LF || k == RG)
+	{
+		d = f->z.max_x - f->z.min_x;
+		if (k == RG)
+		{
+			f->z.max_x += m * d;
+			f->z.min_x += m * d;
+		}
+	}
+	render(f);
+}
+
+int	key_hook(int k, t_fractal *f)
+{
+	if (k == UP || k == DW || k == LF || k == RG)
+		translate(k, 0.3, f);
+	return (0);
+}
+
+
 int main (int ac, char *av[])
 {
 	t_fractal fractal;
+
+	// if (has_errors (ac, av))
+	// 	return (1);
 
 	if(ac < 2 || ac > 4 || ac == 3)
 		return(errno = EINVAL, perror(F_ERRARGS), -1);
@@ -233,11 +263,11 @@ int main (int ac, char *av[])
 		// 	return(-1);
 		// printf("run_init returns: %d\n", check);
 		run_initializers(&fractal, av[1]);
-
 		render(&fractal);
 		mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
 		mlx_hook(fractal.mlxwin, 17, 1L<<2, close_window, &fractal);
 		mlx_mouse_hook(fractal.mlxwin, mouse_hook, &fractal);
+		mlx_key_hook(fractal.mlxwin, key_hook, &fractal);
 		mlx_loop(fractal.mlxptr);
 	}	
 	return (0);
