@@ -118,32 +118,19 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	double i;
 	double color;
 
-	// z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH) * f->z.factor;
-	// z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT) * f->z.factor;
 	z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH) ;
 	z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT) ;
 	c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
 	c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
 
-	// z.re = map(x, f->z.min_x, f->z.max_x, WIDTH);
-	// z.im = map(y, f->z.max_y, f->z.min_y, HEIGHT);
-	// c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / WIDTH ;
-	// c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / HEIGHT ;
-
-	// z.re = map(x, f->z.min_x, f->z.max_x,  (fabs(f->z.minxold - f->z.maxxold))*WIDTH);
-	// z.im = map(y, f->z.max_y, f->z.min_y, (f->z.maxyold - f->z.minyold) * HEIGHT);
-	// c.re = f->z.min_x + x * (f->z.max_x - f->z.min_x) / (  (fabs(f->z.minxold - f->z.maxxold))*WIDTH);
-	// c.im = f->z.max_y + y * (f->z.min_y - f->z.max_y) / ((f->z.maxyold - f->z.minyold) * HEIGHT);
-
 	// check if point diverges
 	i = -1;
-	while (++i < (f->iter * (1 / f->z.factor)))
+	while (++i < f->iter)
 	{
 		tmp = sq_complex(&z);
 		z = sum_complex(&tmp, &c);
 		if ((pow(z.re, 2) + pow(z.im, 2)) > f->divergence_threshold)
 		{
-			// color = map(i/60, CYAN, MAGENTA, fractal->iter);
 			color = map_iter_to_argb(i, PURPLE, WHITE, COLORSPACE);
 			putpixel(x, y, &f->img, color);
 			return ; 
@@ -183,32 +170,29 @@ int	clicked_close(t_fractal *f)
 	return (0);
 }
 
-void	zoom(t_fractal *f, double k)
+void	zoom(t_fractal *f, float k)
 {
 	// f->z.minxold = f->z.min_x;
 	// f->z.maxxold = f->z.max_x;
 	// f->z.minyold = f->z.min_y;
 	// f->z.maxyold = f->z.max_y;
 
-	f->z.max_x *= k;
-	f->z.min_x *= k;
-	f->z.max_y *= k;
-	f->z.min_y *= k;
-	f->z.factor = k;
+	f->z.max_x *= (1 + k);
+	f->z.min_x *= (1 + k);
+	f->z.max_y *= (1 + k);
+	f->z.min_y *= (1 + k);
+	f->z.factor = (1 + k);
+
 }
 
 int mouse_hook(int button, int x, int y, t_fractal *f)
 {
 	(void) x;
 	(void) y;
-	if (button == 5)
-	{
-		// mlx_flush_event(f->mlxptr);
-		// printf("button is: %d\n", button );
-		zoom(f, 1.1);
-	}
-	else if (button == 4)
-		zoom(f, 0.9);
+	if (button == SCROLL_UP)
+		zoom(f, SCALING_STEP);
+	else if (button == SCROLL_DOWN)
+		zoom(f, -1 * SCALING_STEP);
 	render(f);
 	return (0);
 }

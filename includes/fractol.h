@@ -30,6 +30,7 @@
 #define WIDTH 800
 #define HEIGHT 800
 #define TRANSLATION_STEP 0.2
+#define SCALING_STEP 0.1
 #define ITERATIONS 17
 #define COLORSPACE 256
 
@@ -80,6 +81,10 @@
 #define LF 65361
 #define RG 65363
 #define ESC 65307
+
+/*mouse*/
+#define SCROLL_DOWN 4
+#define SCROLL_UP 5
 
 typedef struct s_img
 {
