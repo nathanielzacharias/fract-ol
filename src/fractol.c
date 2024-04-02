@@ -263,7 +263,7 @@ int	key_hook(int k, t_fractal *f)
 	return (0);
 }
 
-int has_errors(int ac, char	*av[])
+int input_has_errors(int ac, char	*av[])
 {
 	(void) av;
 	if(ac < 2 || ac > 4 || ac == 3)
@@ -280,7 +280,6 @@ void choose_fractal(int ac, char *av[], t_fractal *f)
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)))
 		// do_mandelbrot(f, "mandelbrot");
 		run_initializers(f, av[1]);
-	// return (f);
 }
 
 void listen_for_events(t_fractal *fractal)
@@ -296,7 +295,7 @@ int main (int ac, char *av[])
 {
 	t_fractal f;
 
-	if (has_errors (ac, av))
+	if (input_has_errors (ac, av))
 		return (-42);
 	else
 	{
@@ -306,8 +305,6 @@ int main (int ac, char *av[])
 	}
 	return (0);
 }
-
-
 	
 	// int endian_test;
 	// int	local_endian;
