@@ -216,45 +216,49 @@ int mouse_hook(int button, int x, int y, t_fractal *f)
 
 }
 
-void translate(int k, double m, t_fractal *f)
-{
-	double d;
+// void step(t_fractal f, double md, int plus, char axis)
+// {
+// 	if (plus == 1 && axis == 'x')
+// 	{
+// 		f->z.max_x += m * d;
+// 		f->z.min_x += m * d;
+// 	}
+// }
 
-	if (k == LF || k == RG)
-	{
-		d = f->z.max_x - f->z.min_x;
-		if (k == RG)
+void translate(int k, t_fractal *f)
+{
+	double dx;
+	double dy;
+
+	dx = f->z.max_x - f->z.min_x;
+	dy = f->z.max_y - f->z.min_y;
+	if (k == RG)
 		{
-			f->z.max_x += m * d;
-			f->z.min_x += m * d;
+			f->z.max_x += TRANSLATION_STEP * dx;
+			f->z.min_x += TRANSLATION_STEP * dx;
 		}
-		else if (k == LF)
+	else if (k == LF)
 		{
-			f->z.max_x -= m * d;
-			f->z.min_x -= m * d;
+			f->z.max_x -= TRANSLATION_STEP * dx;
+			f->z.min_x -= TRANSLATION_STEP * dx;
 		}
-	}
-	else if (k == UP || k == DW)
-	{
-		d = f->z.max_y - f->z.min_y;
-		if (k == UP)
-		{
-			f->z.max_y += m * d;
-			f->z.min_y += m * d;
-		}
-		else if (k == DW)
+	else if (k == DW)
 		{			
-			f->z.max_y -= m * d;
-			f->z.min_y -= m * d;
+			f->z.max_y -= TRANSLATION_STEP * dy;
+			f->z.min_y -= TRANSLATION_STEP * dy;
 		}
-	}
-	render(f);
+	else if (k == UP)
+		{
+			f->z.max_y += TRANSLATION_STEP * dy;
+			f->z.min_y += TRANSLATION_STEP * dy;
+		}
 }
 
 int	key_hook(int k, t_fractal *f)
 {
 	if (k == UP || k == DW || k == LF || k == RG)
-		translate(k, TRANSLATION_STEP, f);
+		translate(k, f);
+	render(f);
 	return (0);
 }
 
