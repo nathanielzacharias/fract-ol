@@ -283,20 +283,27 @@ void choose_fractal(int ac, char *av[], t_fractal *f)
 	// return (f);
 }
 
+void listen_for_events(t_fractal *fractal)
+{
+	mlx_hook(fractal->mlxwin, 2, 1L<<0, close_window, fractal);
+	mlx_hook(fractal->mlxwin, 17, 1L<<2, close_window, fractal);
+	mlx_mouse_hook(fractal->mlxwin, mouse_hook, fractal);
+	mlx_key_hook(fractal->mlxwin, key_hook, fractal);
+	mlx_loop(fractal->mlxptr);
+}
+
 int main (int ac, char *av[])
 {
-	t_fractal fractal;
+	t_fractal f;
 
 	if (has_errors (ac, av))
 		return (-42);
-	choose_fractal(ac, av, &fractal);
-	render(&fractal);
-	mlx_hook(fractal.mlxwin, 2, 1L<<0, close_window, &fractal);
-	mlx_hook(fractal.mlxwin, 17, 1L<<2, close_window, &fractal);
-	mlx_mouse_hook(fractal.mlxwin, mouse_hook, &fractal);
-	mlx_key_hook(fractal.mlxwin, key_hook, &fractal);
-	mlx_loop(fractal.mlxptr);
-
+	else
+	{
+		choose_fractal(ac, av, &f);
+		render(&f);
+		listen_for_events(&f);
+	}
 	return (0);
 }
 
