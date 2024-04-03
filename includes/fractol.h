@@ -31,7 +31,8 @@
 #define HEIGHT 700
 #define TRANSLATION_STEP 0.2
 #define SCALING_STEP 0.1
-#define ITERATIONS 100
+#define ITERATIONS 42
+#define DIVERGENCE_THRESHOLD 4
 #define COLORSPACE 16000
 
 
@@ -70,10 +71,16 @@
 
 /*Custom ERR messages to pass to perror()*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
+#define F_ERRJULIA "Julia usage: ./fractol \"julia\" <num> <num> (num is between -2 and 2)"
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
 #define F_ERRMLXPTR "creating ptr for MLX ptr/display/window/img returned null"
 #define F_ERRGENERIC "Exited with err_flag == 1"
 #define F_NO_ERR 0
+
+/*mlx aliases*/
+#define DESTROY_NOTIFY 17
+#define KEYPRESS 2
+
 
 /*keys*/
 #define UP 65362

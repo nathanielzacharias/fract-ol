@@ -67,21 +67,21 @@ float map_win_to_complex(float ori_num, float min2, float max2, float max1)
 
 void	init_zoom(t_fractal *f)
 {
-	f->z.min_x = -1.5;
-	f->z.max_x = 1.5;
-	f->z.min_y = -1.5;
-	f->z.max_y = 1.5;
+	f->z.min_x = -2;
+	f->z.max_x = 2;
+	f->z.min_y = -2;
+	f->z.max_y = 2;
 	f->z.factor = 1;
-	f->z.minxold = f->z.min_x;
-	f->z.maxxold = f->z.max_x;
-	f->z.minyold = f->z.min_y;
-	f->z.maxyold = f->z.max_y;
+	// f->z.minxold = f->z.min_x;
+	// f->z.maxxold = f->z.max_x;
+	// f->z.minyold = f->z.min_y;
+	// f->z.maxyold = f->z.max_y;
 }
 
 /*init the values in struct with error handling*/
 int run_initializers(t_fractal *fractal, int name, char *title)
 {
-	fractal->divergence_threshold = 4;
+	fractal->divergence_threshold = DIVERGENCE_THRESHOLD;
 	fractal->iter = ITERATIONS;
 	fractal->name = name;
 
@@ -167,14 +167,14 @@ void	handle_pixel(int x, int y, t_fractal *f)
 		if (abs_z > f->divergence_threshold)
 		{
 			i = i + 1 - (log(abs_z)) / log(2); 
-			// color = map_iter_to_argb(i, PURPLE, WHITE, WHITE - PURPLE);
+			// color = map_iter_to_argb(i, PURPLE, WHITE, 2048);
 			color = map_iter_to_argb(i, JAZZ_GREEN, JAZZ_PINK, JAZZ_PINK - JAZZ_GREEN);
 			putpixel(x, y, &f->img, color);
 			return ; 
 		}
 	}
 	//else converges
-	putpixel(x, y, &f->img, JAZZ_LIME);
+	putpixel(x, y, &f->img, JAZZ_PINK);
 }
 
 /*threshold is -2 to +2, radius of 2*/
@@ -271,20 +271,29 @@ int	key_hook(int k, t_fractal *f)
 	return (0);
 }
 
+/*	Checks for ac.
+*	If Julia, checks that params are between -2 and 2.
+*/
 int input_has_errors(int ac, char	*av[])
 {
-	(void) av;
-	if(ac < 2 || ac > 4 || ac == 3)
-		return(errno = EINVAL, perror(F_ERRARGS), 1);
-	else
-		return (0);
+	float test1;
+	float test2;
+	
+	if (ac < 2 || ac > 4 || ac == 3)
+		return (errno = EINVAL, perror(F_ERRARGS), 1);
+	else if (ac == 4)
+	{
+		test1 = ft_atof(av[2]);
+		test2 = ft_atof(av[3]);
+		if (test1 >= 2 || test1 <= -2 || test2 >= 2 || test2 <= -2)
+			return (errno = EINVAL, perror(F_ERRJULIA), 1);
+	}
+	return (0);
 }
 
 void choose_fractal(int ac, char *av[], t_fractal *f)
 {
-	
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)))
-		// do_mandelbrot(f, "mandelbrot");
 		run_initializers(f, MANDELBROT, av[1]);
 	else if ((ac == 4 && !ft_strncmp(av[1], "julia", 5)))
 	{
@@ -296,8 +305,8 @@ void choose_fractal(int ac, char *av[], t_fractal *f)
 
 void listen_for_events(t_fractal *f)
 {
-	mlx_hook(f->mlxwin, 2, 1L<<0, close_window, f); //keypress ESC
-	mlx_hook(f->mlxwin, 17, 0, clicked_close, f); //DestroyNotify
+	mlx_hook(f->mlxwin, KEYPRESS, 1L<<0, close_window, f);
+	mlx_hook(f->mlxwin, DESTROY_NOTIFY, 0, clicked_close, f);
 	mlx_mouse_hook(f->mlxwin, mouse_hook, f);
 	mlx_key_hook(f->mlxwin, key_hook, f);
 	mlx_loop(f->mlxptr);
@@ -327,5 +336,3 @@ int main (int ac, char *av[])
  //    	local_endian = 1;
  //  	else
  //    	local_endian = 0;
-
-// || (ac == 4 && !ft_strncmp(av[1], "julia", 5))
