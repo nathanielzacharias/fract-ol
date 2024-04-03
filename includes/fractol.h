@@ -13,18 +13,13 @@
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-
-#include "../minilibx-linux/mlx.h"
-
-#include <fcntl.h>   // For open, close
-#include <unistd.h>  // For read, write, close, perror, strerror, exit
-#include <stdlib.h>  // For malloc, free
-#include <stdio.h>   // For perror, strerror
-
+#include <mlx.h>
+#include <fcntl.h>   
+#include <unistd.h>  
+#include <stdlib.h>  
+#include <stdio.h>   
 #include <math.h>
 #include <errno.h>
-
-
 #include "../libft/libft.h"
 
 #define WIDTH 700
@@ -34,7 +29,6 @@
 #define ITERATIONS 48
 #define DIVERGENCE_THRESHOLD 4
 #define COLORSPACE 16000
-
 
 #define BLACK 0x0
 #define WHITE 0xffffff
@@ -69,7 +63,8 @@
 #define JAZZ_BRONZE 0xcd7f32
 #define JAZZ_COPPER 0xb87333
 
-/*Custom ERR messages to pass to perror()*/
+/*	Custom ERR messages to pass to perror()
+*/
 #define F_ERRARGS "Usage: ./fractol \"mandelbrot\" or ./fractol \"julia\" <num> <num>"
 #define F_ERRJULIA "Julia usage: ./fractol \"julia\" <num> <num> (num is between -2 and 2)"
 #define F_ERRMALLOC "malloc() returned NULL, could not alloc memory"
@@ -80,7 +75,6 @@
 /*mlx aliases*/
 #define DESTROY_NOTIFY 17
 #define KEYPRESS 2
-
 
 /*keys*/
 #define UP 65362
@@ -126,10 +120,7 @@ typedef struct s_fractal
 	t_zoom	z;
 	float 	julia_c_im;
 	float 	julia_c_re;
-
-
 } t_fractal;
-
 
 typedef struct s_complex
 {
@@ -137,5 +128,41 @@ typedef struct s_complex
 	float	im;
 } t_complex;
 
+typedef	struct s_coord
+{
+	int		x;
+	int		y;
+} t_coord;
+
+/*	conversion_helpers.c
+*/
+float ft_atof(char *str);
+float map_win_to_complex(float ori_num, float min2, float max2, float max1);
+float map_iter_to_argb(float i, int lower, int upper, int old_space);
+t_complex	sum_complex(t_complex *a, t_complex *b);
+t_complex sq_complex(t_complex *z);
+
+/*	transforms.c
+*/
+void	zoom(t_fractal *f, float k);
+void translate(int k, t_fractal *f);
+
+/*	mlx_helpers.c
+*/
+void putpixel(int x, int y, t_img *img, int color);
+int run_initializers(t_fractal *fractal, int name, char *title);
+void	handle_pixel(int x, int y, t_fractal *f);
+void destroy_free_close(t_fractal *fractal, int err_flag);
+
+/*	hooks.c
+*/
+int	key_hook(int k, t_fractal *f);
+int mouse_hook(int button, int x, int y, t_fractal *f);
+int close_window(int k, t_fractal *f);
+int	clicked_close(t_fractal *f);
+
+/*	fractol.c
+*/
+void	render(t_fractal *fractal);
 
 #endif

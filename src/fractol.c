@@ -10,173 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/fractol.h"
-
-/*	Convert str to float. Depends on libft.
-*/
-float ft_atof(char *str)
-{
-	char *ori_ptr;
-	double result_atoi;
-	double result_post_decimal;
-	size_t len;
-	int		sign;
-
-	sign = 1;
-	ori_ptr = str;
-	while (*str == 32 || (*str >= 9 && *str <= 13))
-		str++;
-	if (*str == '-')
-		sign = -1;
-	result_atoi = (float) ft_atoi(str);
-	while (*str && *str != '.')
-		str++;
-	if (*str && *str == '.')
-		str++;
-	result_post_decimal = (float) ft_atoi(str);
-	len = ft_strlen(str);
-	while (len--)
-		result_post_decimal /= 10;
-	return(sign * (result_atoi + result_post_decimal));
-}
-
-/*	Exit gracefully
-*/
-static void destroy_free_close(t_fractal *fractal, int err_flag)
-{
-	mlx_destroy_image(fractal->mlxptr, fractal->img.ptr);
-	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
-	mlx_loop_end(fractal->mlxptr);
-	mlx_destroy_display(fractal->mlxptr);
-	free(fractal->mlxptr);
-	if (!err_flag) 
-		exit(0);
-	else if (err_flag == 1)
-		return (errno = EIO, perror(F_ERRGENERIC));
-}
-
-
-float map_win_to_complex(float ori_num, float min2, float max2, float max1)
-{
-	float new_dist;
-	float ori_dist;
-	float result;
-
-	new_dist = max2 - min2;
-	ori_dist = max1;
-	result = ((ori_num) / ori_dist) * new_dist + min2;
-	return	(result);
-}
-
-void	init_zoom(t_fractal *f)
-{
-	f->z.min_x = -2;
-	f->z.max_x = 2;
-	f->z.min_y = -2;
-	f->z.max_y = 2;
-	f->z.factor = 1;
-}
-
-/*	Init the values in struct with error handling
-*/
-int run_initializers(t_fractal *fractal, int name, char *title)
-{
-	fractal->divergence_threshold = DIVERGENCE_THRESHOLD;
-	fractal->iter = ITERATIONS;
-	fractal->name = name;
-	fractal->mlxptr = mlx_init();
-	if(!(fractal->mlxptr))
-		return(destroy_free_close(fractal, 1), -1);
-	fractal->mlxwin = mlx_new_window(fractal->mlxptr, WIDTH, HEIGHT, title);
-	if(!(fractal->mlxwin))
-		return (destroy_free_close(fractal, 1), -1);
-	fractal->img.ptr = mlx_new_image(fractal->mlxptr, WIDTH, HEIGHT);
-	if(!(fractal->img.ptr))
-		return (destroy_free_close(fractal, 1), -1);
-	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, &fractal->img.line_l, &fractal->img.endian);
-	init_zoom(fractal);
-	return(0);
-}
-
-t_complex	sum_complex(t_complex *a, t_complex *b)
-{
-	t_complex result;
-
-	result.re = a->re + b->re;
-	result.im = a->im + b->im;
-	return (result);
-}
-
-t_complex sq_complex(t_complex *z)
-{
-	t_complex result;
-
-	result.re = pow(z->re, 2) - pow(z->im, 2);
-	result.im = 2*(z->re)*(z->im);
-	return (result);
-}
-
-void putpixel(int x, int y, t_img *img, int color)
-{
-	int offset;
-
-	offset = (y * img->line_l) + (x * (img->bpp / 8));
-	*(unsigned int *)(img->pix_p + offset) = color;
-}
-
-float map_iter_to_argb(float i, int lower, int upper, int old_space)
-{
-	float color;
-	int new_space;
-
-	new_space = upper - lower;
-	color = (i / old_space) * new_space + lower;
-	return	(color);
-}
-
-void	handle_pixel(int x, int y, t_fractal *f)
-{
-	t_complex	z;
-	t_complex	c;
-	t_complex	tmp;
-	float i;
-	float color;
-	int abs_z;
-
-	z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH) ;
-	z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT) ;
-	if (f->name == MANDELBROT)
-	{
-		c.re = x * (f->z.max_x - f->z.min_x) / WIDTH  + f->z.min_x;
-		c.im = y * (f->z.min_y - f->z.max_y) / HEIGHT + f->z.max_y;
-	}
-	else if (f->name == JULIA)
-	{
-		c.re = f->julia_c_re ;
-		c.im = f->julia_c_im ;
-	}
-	i = -1;
-	while (++i < f->iter)
-	{
-		tmp = sq_complex(&z);
-		z = sum_complex(&tmp, &c);
-		abs_z = pow(z.re, 2) + pow(z.im, 2);
-		if (abs_z > f->divergence_threshold)
-		{
-			color = map_iter_to_argb(i, PURPLE, WHITE, COLORSPACE);
-			putpixel(x, y, &f->img, color);
-			return ; 
-		}
-	}
-	putpixel(x, y, &f->img, JAZZ_YELLOW);
-}
+#include <fractol.h>
 
 /*	Threshold is -2 to +2, radius of 2
 */
 void	render(t_fractal *fractal)
 {
-	int x;
-	int y;
+	int	x;
+	int	y;
 
 	mlx_clear_window(fractal->mlxptr, fractal->mlxwin);
 	y = -1;
@@ -186,88 +27,18 @@ void	render(t_fractal *fractal)
 		while (++x < WIDTH)
 			handle_pixel(x, y, fractal);
 	}
-	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, fractal->img.ptr, 0, 0);
-}
-
-int close_window(int k, t_fractal *f)
-{
-	if (k == ESC)
-		destroy_free_close(f, F_NO_ERR);
-	return (0);
-}
-
-int	clicked_close(t_fractal *f)
-{
-	destroy_free_close(f, F_NO_ERR);
-	return (0);
-}
-
-void	zoom(t_fractal *f, float k)
-{
-	f->z.max_x *= (1 + k);
-	f->z.min_x *= (1 + k);
-	f->z.max_y *= (1 + k);
-	f->z.min_y *= (1 + k);
-	f->z.factor = (1 + k);
-}
-
-int mouse_hook(int button, int x, int y, t_fractal *f)
-{
-	(void) x;
-	(void) y;
-	if (button == SCROLL_UP)
-		zoom(f, SCALING_STEP);
-	else if (button == SCROLL_DOWN)
-		zoom(f, -1 * SCALING_STEP);
-	render(f);
-	return (0);
-}
-
-void translate(int k, t_fractal *f)
-{
-	float dx;
-	float dy;
-
-	dx = f->z.max_x - f->z.min_x;
-	dy = f->z.max_y - f->z.min_y;
-	if (k == RG)
-		{
-			f->z.max_x += TRANSLATION_STEP * dx * f->z.factor;
-			f->z.min_x += TRANSLATION_STEP * dx * f->z.factor;
-		}
-	else if (k == LF)
-		{
-			f->z.max_x -= TRANSLATION_STEP * dx * f->z.factor;
-			f->z.min_x -= TRANSLATION_STEP * dx * f->z.factor;
-		}
-	else if (k == DW)
-		{			
-			f->z.max_y -= TRANSLATION_STEP * dy * f->z.factor;
-			f->z.min_y -= TRANSLATION_STEP * dy * f->z.factor;
-		}
-	else if (k == UP)
-		{
-			f->z.max_y += TRANSLATION_STEP * dy * f->z.factor;
-			f->z.min_y += TRANSLATION_STEP * dy * f->z.factor;
-		}
-}
-
-int	key_hook(int k, t_fractal *f)
-{
-	if (k == UP || k == DW || k == LF || k == RG)
-		translate(k, f);
-	render(f);
-	return (0);
+	mlx_put_image_to_window(fractal->mlxptr, fractal->mlxwin, \
+		fractal->img.ptr, 0, 0);
 }
 
 /*	Checks for ac.
 *	If Julia, checks that params are between -2 and 2.
 */
-int input_has_errors(int ac, char	*av[])
+int	input_has_errors(int ac, char	*av[])
 {
-	float test1;
-	float test2;
-	
+	float	test1;
+	float	test2;
+
 	if (ac < 2 || ac > 4 || ac == 3)
 		return (errno = EINVAL, perror(F_ERRARGS), 1);
 	else if (ac == 4)
@@ -282,7 +53,7 @@ int input_has_errors(int ac, char	*av[])
 
 /*	Second case is default for Julia when no params passed
 */
-void choose_fractal(int ac, char *av[], t_fractal *f)
+void	choose_fractal(int ac, char *av[], t_fractal *f)
 {
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)))
 		run_initializers(f, MANDELBROT, av[1]);
@@ -300,18 +71,18 @@ void choose_fractal(int ac, char *av[], t_fractal *f)
 	}
 }
 
-void listen_for_events(t_fractal *f)
+void	listen_for_events(t_fractal *f)
 {
-	mlx_hook(f->mlxwin, KEYPRESS, 1L<<0, close_window, f);
+	mlx_hook(f->mlxwin, KEYPRESS, 1L << 0, close_window, f);
 	mlx_hook(f->mlxwin, DESTROY_NOTIFY, 0, clicked_close, f);
 	mlx_mouse_hook(f->mlxwin, mouse_hook, f);
 	mlx_key_hook(f->mlxwin, key_hook, f);
 	mlx_loop(f->mlxptr);
 }
 
-int main (int ac, char *av[])
+int	main(int ac, char *av[])
 {
-	t_fractal f;
+	t_fractal	f;
 
 	if (input_has_errors(ac, av))
 		return (errno);
