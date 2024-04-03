@@ -14,16 +14,17 @@ LIBFT_PATH = libft/
 LIBFT_NAME = libft.a
 LIBFT 	   = $(LIBFT_PATH)$(LIBFT_NAME)
 
-#includes
-INC		=	-I ./includes/		\
-			-I ./$(LIBFT_PATH)	\
-			-I ./$(MLX_PATH)
+INC			= -I./includes -I./$(LIBFT_PATH) -I./$(MLX_PATH)
 
 SRC_PATH	=	./src/
-SRC			=	fractol.c
+SRC			=	fractol.c \
+				conversion_helpers.c \
+				hooks.c \
+				mlx_helpers.c \
+				transforms.c
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 
-OBJ_PATH	= obj/
+OBJ_PATH	= ./obj/
 OBJ			= $(SRC:.c=.o)
 OBJS		= $(addprefix $(OBJ_PATH), $(OBJ))
 
