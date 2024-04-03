@@ -97,9 +97,9 @@ void	handle_pixel(int x, int y, t_fractal *f)
 */
 void	destroy_free_close(t_fractal *fractal, int err_flag)
 {
+	mlx_loop_end(fractal->mlxptr);
 	mlx_destroy_image(fractal->mlxptr, fractal->img.ptr);
 	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
-	mlx_loop_end(fractal->mlxptr);
 	mlx_destroy_display(fractal->mlxptr);
 	free(fractal->mlxptr);
 	if (!err_flag)
