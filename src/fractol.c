@@ -12,6 +12,8 @@
 
 #include "../includes/fractol.h"
 
+/*	Convert str to float. Depends on libft.
+*/
 float ft_atof(char *str)
 {
 	char *ori_ptr;
@@ -38,8 +40,8 @@ float ft_atof(char *str)
 	return(sign * (result_atoi + result_post_decimal));
 }
 
-
-/*exit gracefully*/
+/*	Exit gracefully
+*/
 static void destroy_free_close(t_fractal *fractal, int err_flag)
 {
 	mlx_destroy_image(fractal->mlxptr, fractal->img.ptr);
@@ -52,6 +54,7 @@ static void destroy_free_close(t_fractal *fractal, int err_flag)
 	else if (err_flag == 1)
 		return (errno = EIO, perror(F_ERRGENERIC));
 }
+
 
 float map_win_to_complex(float ori_num, float min2, float max2, float max1)
 {
@@ -72,19 +75,15 @@ void	init_zoom(t_fractal *f)
 	f->z.min_y = -2;
 	f->z.max_y = 2;
 	f->z.factor = 1;
-	// f->z.minxold = f->z.min_x;
-	// f->z.maxxold = f->z.max_x;
-	// f->z.minyold = f->z.min_y;
-	// f->z.maxyold = f->z.max_y;
 }
 
-/*init the values in struct with error handling*/
+/*	Init the values in struct with error handling
+*/
 int run_initializers(t_fractal *fractal, int name, char *title)
 {
 	fractal->divergence_threshold = DIVERGENCE_THRESHOLD;
 	fractal->iter = ITERATIONS;
 	fractal->name = name;
-
 	fractal->mlxptr = mlx_init();
 	if(!(fractal->mlxptr))
 		return(destroy_free_close(fractal, 1), -1);
@@ -98,7 +97,6 @@ int run_initializers(t_fractal *fractal, int name, char *title)
 	init_zoom(fractal);
 	return(0);
 }
-
 
 t_complex	sum_complex(t_complex *a, t_complex *b)
 {
@@ -157,7 +155,6 @@ void	handle_pixel(int x, int y, t_fractal *f)
 		c.re = f->julia_c_re ;
 		c.im = f->julia_c_im ;
 	}
-	// check if point diverges
 	i = -1;
 	while (++i < f->iter)
 	{
@@ -166,18 +163,16 @@ void	handle_pixel(int x, int y, t_fractal *f)
 		abs_z = pow(z.re, 2) + pow(z.im, 2);
 		if (abs_z > f->divergence_threshold)
 		{
-			i = i + 1 - (log(abs_z)) / log(2); 
-			// color = map_iter_to_argb(i, PURPLE, WHITE, 2048);
-			color = map_iter_to_argb(i, JAZZ_GREEN, JAZZ_PINK, JAZZ_PINK - JAZZ_GREEN);
+			color = map_iter_to_argb(i, PURPLE, WHITE, COLORSPACE);
 			putpixel(x, y, &f->img, color);
 			return ; 
 		}
 	}
-	//else converges
-	putpixel(x, y, &f->img, JAZZ_PINK);
+	putpixel(x, y, &f->img, JAZZ_YELLOW);
 }
 
-/*threshold is -2 to +2, radius of 2*/
+/*	Threshold is -2 to +2, radius of 2
+*/
 void	render(t_fractal *fractal)
 {
 	int x;
@@ -209,17 +204,11 @@ int	clicked_close(t_fractal *f)
 
 void	zoom(t_fractal *f, float k)
 {
-	// f->z.minxold = f->z.min_x;
-	// f->z.maxxold = f->z.max_x;
-	// f->z.minyold = f->z.min_y;
-	// f->z.maxyold = f->z.max_y;
-
 	f->z.max_x *= (1 + k);
 	f->z.min_x *= (1 + k);
 	f->z.max_y *= (1 + k);
 	f->z.min_y *= (1 + k);
 	f->z.factor = (1 + k);
-
 }
 
 int mouse_hook(int button, int x, int y, t_fractal *f)
@@ -291,10 +280,18 @@ int input_has_errors(int ac, char	*av[])
 	return (0);
 }
 
+/*	Second case is default for Julia when no params passed
+*/
 void choose_fractal(int ac, char *av[], t_fractal *f)
 {
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)))
 		run_initializers(f, MANDELBROT, av[1]);
+	else if ((ac == 2 && !ft_strncmp(av[1], "julia", 5)))
+	{
+		f->julia_c_re = ft_atof("0.355");
+		f->julia_c_im = ft_atof("0.355");
+		run_initializers(f, JULIA, av[1]);
+	}
 	else if ((ac == 4 && !ft_strncmp(av[1], "julia", 5)))
 	{
 		f->julia_c_re = ft_atof(av[2]);
@@ -317,7 +314,7 @@ int main (int ac, char *av[])
 	t_fractal f;
 
 	if (input_has_errors(ac, av))
-		return (-42);
+		return (errno);
 	else
 	{
 		choose_fractal(ac, av, &f);
@@ -326,13 +323,3 @@ int main (int ac, char *av[])
 	}
 	return (0);
 }
-	
-	// int endian_test;
-	// int	local_endian;
-	// void	*mlxptr;
-
-	// endian_test = 0x11223344;
- //  	if (((unsigned char *)&endian_test)[0] == 0x11)
- //    	local_endian = 1;
- //  	else
- //    	local_endian = 0;

@@ -31,7 +31,7 @@
 #define HEIGHT 700
 #define TRANSLATION_STEP 0.2
 #define SCALING_STEP 0.1
-#define ITERATIONS 42
+#define ITERATIONS 48
 #define DIVERGENCE_THRESHOLD 4
 #define COLORSPACE 16000
 
@@ -113,10 +113,6 @@ typedef struct s_zoom
 	float min_y;
 	float max_y;
 	float factor;
-	float minxold;
-	float maxxold;
-	float minyold;
-	float maxyold;
 } t_zoom;
 
 typedef struct s_fractal
