@@ -53,22 +53,31 @@ int	input_has_errors(int ac, char	*av[])
 
 /*	Second case is default for Julia when no params passed
 */
-void	choose_fractal(int ac, char *av[], t_fractal *f)
+int	choose_fractal_error(int ac, char *av[], t_fractal *f)
 {
+	size_t i;
+
+	i = 0;
+	while (i < 1 + ft_strlen(av[1]))
+	{
+		av[1][i] = ft_tolower(av[1][i]);
+		i++;
+	}
 	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)))
-		run_initializers(f, MANDELBROT, av[1]);
+		return (run_initializers(f, MANDELBROT, av[1]));
 	else if ((ac == 2 && !ft_strncmp(av[1], "julia", 5)))
 	{
 		f->julia_c_re = ft_atof("0.355");
 		f->julia_c_im = ft_atof("0.355");
-		run_initializers(f, JULIA, av[1]);
+		return (run_initializers(f, JULIA, av[1]));
 	}
 	else if ((ac == 4 && !ft_strncmp(av[1], "julia", 5)))
 	{
 		f->julia_c_re = ft_atof(av[2]);
 		f->julia_c_im = ft_atof(av[3]);
-		run_initializers(f, JULIA, av[1]);
+		return (run_initializers(f, JULIA, av[1]));
 	}
+	return (1);
 }
 
 void	listen_for_events(t_fractal *f)
@@ -88,7 +97,8 @@ int	main(int ac, char *av[])
 		return (errno);
 	else
 	{
-		choose_fractal(ac, av, &f);
+		if(choose_fractal_error(ac, av, &f))
+			return(errno = EINVAL, perror(F_ERRARGS), 1);
 		render(&f);
 		listen_for_events(&f);
 	}

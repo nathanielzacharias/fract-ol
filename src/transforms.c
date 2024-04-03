@@ -49,3 +49,5 @@ void	translate(int k, t_fractal *f)
 		f->z.min_y += TRANSLATION_STEP * dy * f->z.factor;
 	}
 }
+
+
