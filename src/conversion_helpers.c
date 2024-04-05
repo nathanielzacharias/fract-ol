@@ -16,14 +16,12 @@
 */
 float	ft_atof(char *str)
 {
-	char	*ori_ptr;
 	double	result_atoi;
 	double	result_post_decimal;
 	size_t	len;
 	int		sign;
 
 	sign = 1;
-	ori_ptr = str;
 	while (*str == 32 || (*str >= 9 && *str <= 13))
 		str++;
 	if (*str == '-')
@@ -44,12 +42,12 @@ float	map_win_to_complex(float ori_num, float min2, float max2, float max1)
 {
 	float	new_dist;
 	float	ori_dist;
-	float	result;
+	float	res;
 
 	new_dist = max2 - min2;
 	ori_dist = max1;
-	result = ((ori_num) / ori_dist) * new_dist + min2;
-	return (result);
+	res = ((ori_num) / ori_dist) * new_dist + min2;
+	return (res);
 }
 
 float	map_iter_to_argb(float i, int lower, int upper, int old_space)

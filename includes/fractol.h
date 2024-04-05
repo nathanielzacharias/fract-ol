@@ -24,8 +24,8 @@
 
 /*	Window macros
 */
-# define WIDTH 300
-# define HEIGHT 300
+# define WIDTH 350
+# define HEIGHT 350
 # define TRANSLATION_STEP 0.2
 # define SCALING_STEP 0.1
 # define ITERATIONS 48

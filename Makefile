@@ -1,61 +1,75 @@
-#target
-NAME	=	fractol
-CC		=	cc
-CFLAGS	=	-Wextra -Wall -Werror
-STDLIBS = 	-lXext -lX11 -lm
+# Target executable
+NAME = fractol
 
-#minilibx as cloned from github 42 Paris
-MLX_PATH	= minilibx-linux/
-MLX_NAME	= libmlx.a
-MLX			= $(MLX_PATH)$(MLX_NAME)
+# Compiler
+CC = gcc
 
-#libft
-LIBFT_PATH = libft/
-LIBFT_NAME = libft.a
-LIBFT 	   = $(LIBFT_PATH)$(LIBFT_NAME)
+# Compiler flags
+CFLAGS = -Wall -Wextra -Werror
 
-INC			= -I./includes -I./$(LIBFT_PATH) -I./$(MLX_PATH)
+# Directories
+SRC_DIR = src
+OBJ_DIR = obj
+INC_DIR = includes
+LIBFT_DIR = libft
+MLX_DIR = minilibx-linux
 
-SRC_PATH	=	./src/
-SRC			=	fractol.c \
+# Source files
+SRC_FILES	=	fractol.c \
 				conversion_helpers.c \
 				hooks.c \
 				mlx_helpers.c \
 				transforms.c
-SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 
-OBJ_PATH	= ./obj/
-OBJ			= $(SRC:.c=.o)
-OBJS		= $(addprefix $(OBJ_PATH), $(OBJ))
+# Object files
+OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 
-all: $(MLX) $(LIBFT) $(NAME) 
+# Libraries
+LIBFT = $(LIBFT_DIR)/libft.a
+MLX = $(MLX_DIR)/libmlx.a
+LIBS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@$(CC) $(CFLAGS) -c $< -o $@ $(INC)
+# Includes
+INC = -I$(INC_DIR) -I$(LIBFT_DIR) -I$(MLX_DIR)
 
-$(OBJS): $(OBJ_PATH)
+# Dependency files
+DEP_FILES = $(OBJ_FILES:.o=.d)
 
-$(OBJ_PATH):
-	@mkdir $(OBJ_PATH)
+# Compilation rule
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	@$(CC) $(CFLAGS) $(INC) -MMD -c $< -o $@
+
+# Include dependency files
+-include $(DEP_FILES)
+
+# Default rule
+all: $(NAME)
+
+# Linking rule
+$(NAME): $(OBJ_FILES) $(LIBFT) $(MLX)
+	@$(CC) $(CFLAGS) $(OBJ_FILES) -o $(NAME) $(LIBS)
+
+# Library rules
+$(LIBFT):
+	@$(MAKE) -C $(LIBFT_DIR)
 
 $(MLX):
-	@make -sC $(MLX_PATH)
+	@$(MAKE) -C $(MLX_DIR)
 
-$(LIBFT):
-	@make -sC $(LIBFT_PATH)
-
-$(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(MLX) $(LIBFT) $(INC) $(STDLIBS)
-
+# Clean rule
 clean:
-	@rm -rf $(OBJ_PATH)
-	@make clean -C $(MLX_PATH)
-	@make clean -C $(LIBFT_PATH)
+	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(MLX_DIR) clean
+	@rm -rf $(OBJ_DIR)
 
+# Fclean rule
 fclean: clean
+	@$(MAKE) -C $(LIBFT_DIR) fclean
 	@rm -f $(NAME)
-	@rm -f $(LIBFT_PATH)$(LIBFT_NAME)
 
+# Re rule
 re: fclean all
 
-.PHONY: all re clean fclean
+# PHONY
+.PHONY: all clean fclean re
