@@ -55,7 +55,7 @@ int	input_has_errors(int ac, char	*av[])
 */
 int	choose_fractal_error(int ac, char *av[], t_fractal *f)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (i < 1 + ft_strlen(av[1]))
@@ -97,8 +97,8 @@ int	main(int ac, char *av[])
 		return (errno);
 	else
 	{
-		if(choose_fractal_error(ac, av, &f))
-			return(errno = EINVAL, perror(F_ERRARGS), 1);
+		if (choose_fractal_error(ac, av, &f))
+			return (errno = EINVAL, perror(F_ERRARGS), 1);
 		render(&f);
 		listen_for_events(&f);
 	}

@@ -26,8 +26,8 @@
 */
 # define WIDTH 350
 # define HEIGHT 350
-# define TRANSLATION_STEP 0.2
-# define SCALING_STEP 0.1
+# define TSTEP 0.2
+# define SCALING_STEP 1.1
 # define ITERATIONS 48
 # define DIVERGENCE_THRESHOLD 4
 # define COLORSPACE 16000
