@@ -38,11 +38,7 @@ int	run_initializers(t_fractal *fractal, int name, char *title)
 		return (destroy_free_close(fractal, 1), -1);
 	fractal->img.pix_p = mlx_get_data_addr(fractal->img.ptr, &fractal->img.bpp, \
 		&fractal->img.line_l, &fractal->img.endian);
-	fractal->z.min_x = -2;
-	fractal->z.max_x = 2;
-	fractal->z.min_y = -2;
-	fractal->z.max_y = 2;
-	fractal->z.factor = 1;
+	init_maxmin(fractal);
 	return (0);
 }
 

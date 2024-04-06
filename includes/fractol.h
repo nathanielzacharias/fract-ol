@@ -86,6 +86,7 @@
 # define LF 65361
 # define RG 65363
 # define ESC 65307
+# define KEY_R 114
 
 /*mouse*/
 # define SCROLL_DOWN 5
@@ -149,6 +150,7 @@ t_complex	sq_complex(t_complex *z);
 
 /*	transforms.c
 */
+void		init_maxmin(t_fractal *f);
 void		zoom(t_fractal *f, int zoom_in);
 void		translate(int k, t_fractal *f);
 

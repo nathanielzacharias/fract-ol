@@ -16,6 +16,8 @@ int	key_hook(int k, t_fractal *f)
 {
 	if (k == UP || k == DW || k == LF || k == RG)
 		translate(k, f);
+	if (k == KEY_R)
+		init_maxmin(f);
 	render(f);
 	return (0);
 }

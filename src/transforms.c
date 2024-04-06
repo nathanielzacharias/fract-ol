@@ -12,6 +12,15 @@
 
 #include <fractol.h>
 
+void	init_maxmin(t_fractal *f)
+{
+	f->z.min_x = -2;
+	f->z.max_x = 2;
+	f->z.min_y = -2;
+	f->z.max_y = 2;
+	f->z.factor = 1;
+}
+
 void	zoom(t_fractal *f, int zoom_in)
 {
 	float	k;
