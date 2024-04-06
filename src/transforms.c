@@ -19,6 +19,9 @@ void	init_maxmin(t_fractal *f)
 	f->z.min_y = -2;
 	f->z.max_y = 2;
 	f->z.factor = 1;
+	f->color_lower = PURPLE;
+	f->color_upper = WHITE;
+	f->in_set_color = JAZZ_YELLOW;
 }
 
 void	zoom(t_fractal *f, int zoom_in)

@@ -87,6 +87,7 @@
 # define RG 65363
 # define ESC 65307
 # define KEY_R 114
+# define KEY_SPACE 32
 
 /*mouse*/
 # define SCROLL_DOWN 5
@@ -125,6 +126,9 @@ typedef struct s_fractal
 	t_zoom	z;
 	float	julia_c_im;
 	float	julia_c_re;
+	int		color_lower;
+	int		color_upper;
+	int		in_set_color;
 }	t_fractal;
 
 typedef struct s_complex
