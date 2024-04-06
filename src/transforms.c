@@ -48,7 +48,7 @@ void	zoom(t_fractal *f, int zoom_in)
 		// cx = win_x_return;
 		// cy = win_y_return;
 		cx = map_win_to_complex(win_x_return, f->z.min_x, f->z.max_x, WIDTH);
-		cy = map_win_to_complex(win_y_return, f->z.min_y, f->z.max_y, HEIGHT);
+		cy = map_win_to_complex(HEIGHT - win_y_return, f->z.min_y, f->z.max_y, HEIGHT);
 	}
 	else
 	{
