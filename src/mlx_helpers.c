@@ -57,13 +57,11 @@ static void	putcolor(t_complex *z, t_complex *c, t_coord *coord, t_fractal *f)
 		*z = sum_complex(&tmp, c);
 		if (pow(z->re, 2) + pow(z->im, 2) > f->divergence_threshold)
 		{
-			// color = map_iter_to_argb(i, PURPLE, WHITE, COLORSPACE);
-			color = map_iter_to_argb(i, f->color_lower, f->color_upper, COLORSPACE);
+			color = map_iter_to_argb(i, f->color_lower, f->color_upper, CDIV);
 			putpixel(coord->x, coord->y, &f->img, color);
 			return ;
 		}
 	}
-	// putpixel(coord->x, coord->y, &f->img, JAZZ_YELLOW);
 	putpixel(coord->x, coord->y, &f->img, f->in_set_color);
 }
 

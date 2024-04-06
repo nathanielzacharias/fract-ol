@@ -30,7 +30,7 @@
 # define SCALING_STEP 0.05
 # define ITERATIONS 48
 # define DIVERGENCE_THRESHOLD 4
-# define COLORSPACE 16000
+# define CDIV 16000
 
 /*	Colour codes
 */
