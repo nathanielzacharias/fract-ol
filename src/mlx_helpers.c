@@ -84,8 +84,8 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	}
 	else if (f->name == JULIA)
 	{
-		c.re = f->julia_c_re ;
-		c.im = f->julia_c_im ;
+		c.re = f->julia_c_re;
+		c.im = f->julia_c_im;
 	}
 	coord.x = x;
 	coord.y = y;

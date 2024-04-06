@@ -27,7 +27,7 @@
 # define WIDTH 350
 # define HEIGHT 350
 # define TSTEP 0.2
-# define SCALING_STEP 1.1
+# define SCALING_STEP 0.05
 # define ITERATIONS 48
 # define DIVERGENCE_THRESHOLD 4
 # define COLORSPACE 16000
@@ -88,8 +88,8 @@
 # define ESC 65307
 
 /*mouse*/
-# define SCROLL_DOWN 4
-# define SCROLL_UP 5
+# define SCROLL_DOWN 5
+# define SCROLL_UP 4
 
 /*fractal name*/
 # define MANDELBROT 1
@@ -149,7 +149,7 @@ t_complex	sq_complex(t_complex *z);
 
 /*	transforms.c
 */
-void		zoom(t_fractal *f, float k);
+void		zoom(t_fractal *f, int zoom_in);
 void		translate(int k, t_fractal *f);
 
 /*	mlx_helpers.c

@@ -25,9 +25,9 @@ int	mouse_hook(int button, int x, int y, t_fractal *f)
 	(void) x;
 	(void) y;
 	if (button == SCROLL_UP)
-		zoom(f, SCALING_STEP);
+		zoom(f, 1);
 	else if (button == SCROLL_DOWN)
-		zoom(f, -1 * SCALING_STEP);
+		zoom(f, 0);
 	render(f);
 	return (0);
 }

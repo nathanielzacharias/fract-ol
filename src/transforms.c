@@ -12,35 +12,99 @@
 
 #include <fractol.h>
 
-void	zoom(t_fractal *f, float k)
+void	zoom(t_fractal *f, int zoom_in)
 {
-	// f->z.max_x *= (1 + k);
-	// f->z.min_x *= (1 + k);
-	// f->z.max_y *= (1 + k);
-	// f->z.min_y *= (1 + k);
-	f->z.factor = (1 + k);
+	float k;
+	// (void) f;
+	if (zoom_in)
+	{
+		// printf("zoom in is: %d\n", zoom_in );
+		k = 1 - SCALING_STEP;
+	}
+	else if (!zoom_in)
+		k = 1 + SCALING_STEP;
+		// printf("zoom in is: %d\n", zoom_in );
 
+
+	float dx;
+		dx = ((f->z.max_x - f->z.min_x) / 2);
+	float dy;
+		dy = ((f->z.max_y - f->z.min_y) / 2);
 	float cx;
-	cx = f->z.min_x;
-	while (cx != f->z.max_x)
-		cx++;
-	cx /= 2;
-
-	// cx = (f->z.max_x - f->z.min_x) / 2 + f->z.min_x;
-	f->z.max_x = ((f->z.max_x - (cx)) * k) + cx;
-	f->z.min_x = cx - (((cx) - f->z.min_x) * k);
-
-
+		cx = f->z.min_x + dx;
 	float cy;
-	// cy = (f->z.max_y - f->z.min_y) / 2 + f->z.min_y;
-	cy = f->z.min_y;
-	while (cy != f->z.max_y)
-		cy++;
-	cy /= 2;
+		cy = f->z.min_y + dy;
 
-	f->z.max_y = ((f->z.max_y - (cy)) * k) + cy;
-	f->z.min_y = cy - (((cy) - f->z.min_y) * k);
+	f->z.max_x = cx + (k * dx);
+	f->z.min_x = cx - (k * dx);
+	f->z.max_y = cy + (k * dy);
+	f->z.min_y = cy - (k * dy);
 }
+
+
+
+
+
+// void	zoom(t_fractal *f, float k)
+// {
+
+// 	// f->z.max_x = k * f->z.max_x + (cx + dx) ;
+// 	// f->z.min_x = k * f->z.min_x + (cx + dx) ;
+	
+// 	f->z.max_y = k * f->z.max_y + f->z.max_y ;
+// 	f->z.min_y = k * f->z.min_y + f->z.min_y ;
+
+// 	// float dx;
+// 	// if (f->z.max_x >= 0)
+// 	// 	dx = ((f->z.max_x - f->z.min_x) / 2);
+// 	// else if (f->z.max_x < 0)
+// 	// 	dx = (f->z.min_x - f->z.max_x) / 2;
+// 	// float dy;
+// 	// if (f->z.max_y >= 0)
+// 	// 	dy = ((f->z.max_y - f->z.min_y) / 2);
+// 	// else if (f->z.max_y < 0)
+// 	// 	dx = (f->z.min_y - f->z.max_y) / 2;
+
+// 	// if (cx >= 0)
+// 	// 	f->z.max_x = k * (dx) + cx;
+// 	// else if (cx < 0)
+// 	// 	f->z.max_x = k * (dx) + cx;
+
+// 	// if (cx >= 0)
+// 	// 	f->z.min_x = -k * (dx) + cx;
+// 	// else if (cx < 0)
+// 	// 	f->z.min_x = -k * (dx) + cx;
+
+	
+// 	// float cy;
+// 	// cy = f->z.min_y + dy;
+
+// 	// if (cy >= 0)
+// 	// 	f->z.max_y = k * (dy) + cy;
+// 	// else if (cy < 0)
+// 	// 	f->z.max_y = k * (dy) + cy;
+
+// 	// if (cx >= 0)
+// 	// 	f->z.min_y = -k * (dy) + cy;
+// 	// else if (cx < 0)
+// 	// 	f->z.min_y = -k * (dy) + cy;
+
+
+// 	// printf("cx is: %f\n", cx );
+// 	printf("max_x is: %f\n", f->z.max_x );
+// 	printf("min_x is: %f\n", f->z.min_x );
+// 	printf("dx is: %f\n", dx );
+
+
+// 	// printf("cy is: %f\n", cy );
+// 	printf("max_y is: %f\n", f->z.max_y );
+// 	printf("min_y is: %f\n", f->z.min_y );
+// 	printf("dy is: %f\n", dy );
+
+// 	printf("\n");
+
+// 	f->z.factor = (k + 1);
+// }
 
 void	translate(int k, t_fractal *f)
 {
