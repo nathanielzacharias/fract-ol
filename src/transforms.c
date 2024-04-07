@@ -14,10 +14,20 @@
 
 void	init_maxmin(t_fractal *f)
 {
-	f->z.min_x = -2;
-	f->z.max_x = 2;
-	f->z.min_y = -2;
-	f->z.max_y = 2;
+	if (f->name == BURN)
+	{
+		f->z.min_x = -2.5;
+		f->z.max_x = 1.5;
+		f->z.min_y = 1.5;
+		f->z.max_y = -2.5;
+	}
+	else
+	{
+		f->z.min_x = -2;
+		f->z.max_x = 2;
+		f->z.min_y = -2;
+		f->z.max_y = 2;
+	}
 	f->z.factor = 1;
 	f->color_lower = PURPLE;
 	f->color_upper = WHITE;

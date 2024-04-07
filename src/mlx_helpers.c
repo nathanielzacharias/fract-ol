@@ -57,7 +57,7 @@ static void	putcolor(t_complex *z, t_complex *c, t_coord *coord, t_fractal *f)
 		{
 			if (z->re < 0)
 				z->re *= -1;
-			if (z->im > 0)
+			if (z->im < 0)
 				z->im *= -1;
 		}
 		tmp = sq_complex(z);
