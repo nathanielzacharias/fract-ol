@@ -28,7 +28,7 @@
 # define HEIGHT 350
 # define TSTEP 0.2
 # define SCALING_STEP 0.05
-# define ITERATIONS 130
+# define ITERATIONS 48
 # define DIVERGENCE_THRESHOLD 4
 # define CDIV 16000
 

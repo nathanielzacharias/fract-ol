@@ -12,14 +12,6 @@
 
 #include <fractol.h>
 
-void	putpixel(int x, int y, t_img *img, int color)
-{
-	int	offset;
-
-	offset = (y * img->line_l) + (x * (img->bpp / 8));
-	*(unsigned int *)(img->pix_p + offset) = color;
-}
-
 /*	Init the values in struct with error handling
 */
 int	run_initializers(t_fractal *fractal, int name, char *title)
@@ -40,6 +32,31 @@ int	run_initializers(t_fractal *fractal, int name, char *title)
 		&fractal->img.line_l, &fractal->img.endian);
 	init_maxmin(fractal);
 	return (0);
+}
+
+/*	Exit gracefully
+*/
+void	destroy_free_close(t_fractal *fractal, int err_flag)
+{
+	mlx_loop_end(fractal->mlxptr);
+	mlx_destroy_image(fractal->mlxptr, fractal->img.ptr);
+	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
+	mlx_destroy_display(fractal->mlxptr);
+	free(fractal->mlxptr);
+	if (!err_flag)
+		exit(0);
+	else if (err_flag == 1)
+		return (errno = EIO, perror(F_ERRGENERIC));
+}
+
+/* Saves color of up dw lf rg and uses their average for cur pix
+*/
+void	putpixel(int x, int y, t_img *img, int color)
+{
+	int	offset;
+
+	offset = (y * img->line_l) + (x * (img->bpp / 8));
+	*(unsigned int *)(img->pix_p + offset) = color;
 }
 
 /*	This is a helper func for handle_pixel. Needed to split for Norm.
@@ -94,19 +111,4 @@ void	handle_pixel(int x, int y, t_fractal *f)
 	coord.y = y;
 	putcolor(&z, &c, &coord, f);
 	return ;
-}
-
-/*	Exit gracefully
-*/
-void	destroy_free_close(t_fractal *fractal, int err_flag)
-{
-	mlx_loop_end(fractal->mlxptr);
-	mlx_destroy_image(fractal->mlxptr, fractal->img.ptr);
-	mlx_destroy_window(fractal->mlxptr, fractal->mlxwin);
-	mlx_destroy_display(fractal->mlxptr);
-	free(fractal->mlxptr);
-	if (!err_flag)
-		exit(0);
-	else if (err_flag == 1)
-		return (errno = EIO, perror(F_ERRGENERIC));
 }

@@ -33,7 +33,7 @@ LIBS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 INC = -I$(INC_DIR) -I$(LIBFT_DIR) -I$(MLX_DIR)
 
 # Dependency files
-DEP_FILES = $(OBJ_FILES:.o=.d)
+# DEP_FILES = $(OBJ_FILES:.o=.d)
 
 # Compilation rule
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
@@ -41,7 +41,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@$(CC) $(CFLAGS) $(INC) -MMD -c $< -o $@
 
 # Include dependency files
--include $(DEP_FILES)
+# -include $(DEP_FILES)
 
 # Default rule
 all: $(NAME)
