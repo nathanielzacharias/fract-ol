@@ -53,6 +53,13 @@ static void	putcolor(t_complex *z, t_complex *c, t_coord *coord, t_fractal *f)
 	i = -1;
 	while (++i < f->iter)
 	{
+		if (f->name == BURN)
+		{
+			if (z->re < 0)
+				z->re *= -1;
+			if (z->im > 0)
+				z->im *= -1;
+		}
 		tmp = sq_complex(z);
 		*z = sum_complex(&tmp, c);
 		if (pow(z->re, 2) + pow(z->im, 2) > f->divergence_threshold)
@@ -73,7 +80,7 @@ void	handle_pixel(int x, int y, t_fractal *f)
 
 	z.re = map_win_to_complex(x, f->z.min_x, f->z.max_x, WIDTH);
 	z.im = map_win_to_complex(y, f->z.max_y, f->z.min_y, HEIGHT);
-	if (f->name == MANDELBROT)
+	if (f->name == MANDELBROT || f->name == BURN)
 	{
 		c.re = x * (f->z.max_x - f->z.min_x) / WIDTH + f->z.min_x;
 		c.im = y * (f->z.min_y - f->z.max_y) / HEIGHT + f->z.max_y;

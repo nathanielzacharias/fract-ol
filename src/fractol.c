@@ -71,6 +71,12 @@ int	choose_fractal_error(int ac, char *av[], t_fractal *f)
 		f->julia_c_im = ft_atof("0.355");
 		return (run_initializers(f, JULIA, av[1]));
 	}
+	else if ((ac == 2 && !ft_strncmp(av[1], "burning", 7)))
+	{
+		// f->julia_c_re = ft_atof("0");
+		// f->julia_c_im = ft_atof("0");
+		return (run_initializers(f, BURN, av[1]));
+	}
 	else if ((ac == 4 && !ft_strncmp(av[1], "julia", 5)))
 	{
 		f->julia_c_re = ft_atof(av[2]);

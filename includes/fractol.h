@@ -96,6 +96,7 @@
 /*fractal name*/
 # define MANDELBROT 1
 # define JULIA 2
+# define BURN 3
 
 typedef struct s_img
 {
